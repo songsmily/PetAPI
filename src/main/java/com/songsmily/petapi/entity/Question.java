@@ -1,5 +1,7 @@
 package com.songsmily.petapi.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import java.io.Serializable;
 
@@ -11,7 +13,8 @@ import java.io.Serializable;
  */
 @SuppressWarnings("serial")
 public class Question extends Model<Question> {
-    
+    @TableId(value = "id", type = IdType.AUTO)
+
     private Integer id;
     
     private String title;

@@ -20,6 +20,7 @@ import java.util.List;
  * @author SongSmily
  * @since 2019-11-27 11:32:14
  */
+@CrossOrigin
 @RestController
 @RequestMapping("question")
 public class QuestionController extends ApiController {
@@ -62,6 +63,7 @@ public class QuestionController extends ApiController {
      */
     @PostMapping
     public R insert(@RequestBody Question question) {
+
         return success(this.questionService.save(question));
     }
 
