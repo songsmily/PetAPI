@@ -6,17 +6,21 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.songsmily.petapi.dto.Result;
 import com.songsmily.petapi.entity.User;
 import com.songsmily.petapi.service.UserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.subject.Subject;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * (User)表控制层
@@ -24,6 +28,7 @@ import java.util.List;
  * @author SongSmily
  * @since 2019-12-06 14:29:08
  */
+@CrossOrigin
 @RestController
 @RequestMapping("user")
 public class UserController extends ApiController {
@@ -32,6 +37,26 @@ public class UserController extends ApiController {
      */
     @Resource
     private UserService userService;
+
+    /**
+     * 返回登录用户信息
+     * @return
+     */
+    @RequiresPermissions(value = "user-all")
+    @GetMapping("/returnUserInfo")
+    public Result returnUserInfo(){
+        User user  = (User) SecurityUtils.getSubject().getPrincipal();
+        System.err.println("-----User" + user.toString());
+        Map<String,Object> data = new HashMap<>();
+        data.put("accountId",user.getAccountId());
+        data.put("accountType",user.getAccountType());
+        data.put("id",user.getId());
+        data.put("avatarUrl",user.getAvatarUrl());
+        data.put("name",user.getName());
+        data.put("bio",user.getBio());
+        Result result = new Result(data);
+        return result;
+    }
     //用户登录
     @RequestMapping(value="/login")
     public String login(String username,String password) {
@@ -64,6 +89,12 @@ public class UserController extends ApiController {
         }catch (Exception e) {
             return "用户名或密码错误";
         }
+    }
+    @RequestMapping("/logOut")
+    public String logOut(){
+        Subject subject = SecurityUtils.getSubject();
+        subject.logout();
+        return "success";
     }
 
     /**

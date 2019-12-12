@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.songsmily.petapi.entity.Roles;
 import com.songsmily.petapi.entity.User;
 import com.songsmily.petapi.service.UserService;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.Permission;
@@ -13,6 +14,7 @@ import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -36,6 +38,7 @@ public class GitUserRealm extends AuthorizingRealm {
      */
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         //1.获取已认证的用户数据
+        System.err.println("进入授权方法");
         User user = (User) principalCollection.getPrimaryPrincipal();//得到唯一的安全数据
         //2.根据用户数据获取用户的权限信息（所有角色，所有权限）
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
@@ -50,7 +53,10 @@ public class GitUserRealm extends AuthorizingRealm {
      *  参数：传递的用户名密码
      * @return
      */
+    @Value("${login.timeout}")
+     private int timeout;
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
+        SecurityUtils.getSubject().getSession().setTimeout(timeout);
         //1.获取登录的用户名密码（token）
         UsernamePasswordToken upToken = (UsernamePasswordToken) authenticationToken;
         String username = upToken.getUsername();
@@ -59,12 +65,11 @@ public class GitUserRealm extends AuthorizingRealm {
         QueryWrapper<User> wrapper = Wrappers.query();
         wrapper.eq("name",username);
         User user = userService.getOne(wrapper);
-        if (user != null){
-
-        }
         //3.判断用户是否存在或者密码是否一致
-        System.err.println(password + " -----" + user.getPassword() );
+
         if(user != null && user.getPassword().equals(password)) {
+            System.err.println("认证成功");
+            System.err.println(" ---user--" + user.toString());
             //4.如果一致返回安全数据
             //构造方法：安全数据，密码，realm域名
             SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(user,user.getPassword(),this.getName());

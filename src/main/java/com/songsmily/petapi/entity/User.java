@@ -4,7 +4,11 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import org.crazycake.shiro.AuthCachePrincipal;
+
 import java.io.Serializable;
+import java.io.Serializable;
+
 
 /**
  * (User)表实体类
@@ -13,7 +17,9 @@ import java.io.Serializable;
  * @since 2019-12-06 16:47:11
  */
 @SuppressWarnings("serial")
-public class User extends Model<User> {
+public class User extends Model<User> implements Serializable,AuthCachePrincipal {
+    private static final long serialVersionUID = 4297464181093070302L;
+
     //唯一标识
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
@@ -168,4 +174,9 @@ public class User extends Model<User> {
     protected Serializable pkVal() {
         return this.id;
     }
+
+    @Override
+    public String getAuthCacheKey() {
+        return null;
     }
+}

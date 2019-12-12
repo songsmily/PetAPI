@@ -7,7 +7,9 @@ import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.songsmily.petapi.entity.Music;
+import com.songsmily.petapi.entity.User;
 import com.songsmily.petapi.service.MusicService;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
@@ -50,9 +52,11 @@ public class MusicController extends ApiController {
      *查询所有歌曲数据
      *
      */
-    @RequiresPermissions(value = "users")
+    @RequiresPermissions(value = "user-all")
     @GetMapping("/selectAll")
     public R selectAll(){
+        User use = (User) SecurityUtils.getSubject().getPrincipal();
+        System.out.println(use);
         return success(this.musicService.list());
     }
 

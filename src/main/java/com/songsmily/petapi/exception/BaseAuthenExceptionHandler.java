@@ -1,5 +1,7 @@
 package com.songsmily.petapi.exception;
 
+import com.songsmily.petapi.dto.CodeMsg;
+import com.songsmily.petapi.dto.Result;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -17,17 +19,7 @@ public class BaseAuthenExceptionHandler {
 
     @RequestMapping("/UnLoginError")
     @ResponseBody
-    public Map<String, Integer> unLoginError(){
-        Map<String,Integer> jsonResult = new HashMap<>();
-        jsonResult.put("code",500);
-        System.err.println("1111");
-        return jsonResult;
-    }
-    @RequestMapping("/UnAuthError")
-    @ResponseBody
-    public Map<String, Integer> unAuthError(){
-        Map<String,Integer> jsonResult = new HashMap<>();
-        jsonResult.put("code",600);
-        return jsonResult;
+    public Result unLoginError(){
+        return new Result(CodeMsg.AUTHENERROR);
     }
 }

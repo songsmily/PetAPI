@@ -22,7 +22,7 @@ public class Result<T> {
     /**
      * 成功时只设置消息
      * */
-    private Result(T data) {
+    public Result(T data) {
         this.code = 0;
         this.msg = "success";
         this.data = data;
@@ -31,7 +31,7 @@ public class Result<T> {
     /**
      * 将返回消息CodeMsg封装到本类中
      * */
-    private Result(CodeMsg cm) {
+    public Result(CodeMsg cm) {
         if(cm == null) {
             return;
         }
