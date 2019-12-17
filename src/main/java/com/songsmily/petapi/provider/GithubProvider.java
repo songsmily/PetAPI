@@ -13,10 +13,13 @@ import java.io.IOException;
 @Component
 @Slf4j
 public class GithubProvider {
+    /**
+     * 通过OKhttp发送请求获取accesstoken
+     * @param accessToken
+     * @return
+     */
     public String getAccessToken(AccessToken accessToken) {
-        MediaType mediaType
-                = MediaType.get("application/json; charset=utf-8");
-
+        MediaType mediaType = MediaType.get("application/json; charset=utf-8");
         OkHttpClient client = new OkHttpClient();
         RequestBody body = RequestBody.create(mediaType, JSON.toJSONString(accessToken));
         Request request = new Request.Builder()
@@ -33,6 +36,11 @@ public class GithubProvider {
         return null;
     }
 
+    /**
+     * 获取user信息
+     * @param access_token
+     * @return
+     */
     public GithubUser getUser(String access_token){
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()

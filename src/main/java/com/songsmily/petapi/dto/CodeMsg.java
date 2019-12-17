@@ -9,6 +9,8 @@ public class CodeMsg {
     public static CodeMsg  SERVERERROR = new CodeMsg(500, "serverError");//服务器异常
     public static CodeMsg  AUTHENERROR = new CodeMsg(600,"unlogin");//未登录
     public static CodeMsg  AUTHORERROR = new CodeMsg(700,"unauthen");//未授权
+    public static CodeMsg  MESSAGESENDERROR = new CodeMsg(800,"短信发送失败");//未授权
+    public static CodeMsg  CHECKERROR = new CodeMsg(900,"验证失败");//验证失败
 
     public CodeMsg(int code, String msg) {
         this.code = code;

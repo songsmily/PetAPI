@@ -52,7 +52,7 @@ public class MusicController extends ApiController {
      *查询所有歌曲数据
      *
      */
-    @RequiresPermissions(value = "user-all")
+//    @RequiresPermissions(value = "user-all")
     @GetMapping("/selectAll")
     public R selectAll(){
         User use = (User) SecurityUtils.getSubject().getPrincipal();

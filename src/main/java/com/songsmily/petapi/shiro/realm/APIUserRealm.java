@@ -1,10 +1,11 @@
-package com.songsmily.petapi.realm;
+package com.songsmily.petapi.shiro.realm;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.songsmily.petapi.entity.Roles;
 import com.songsmily.petapi.entity.User;
 import com.songsmily.petapi.service.UserService;
+import com.songsmily.petapi.shiro.common.UserToken;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
@@ -19,7 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import java.util.HashSet;
 import java.util.Set;
 
-public class GitUserRealm extends AuthorizingRealm {
+public class APIUserRealm extends AuthorizingRealm {
 
     public void setName(String name) {
         super.setName("customRealm");
@@ -58,12 +59,12 @@ public class GitUserRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         SecurityUtils.getSubject().getSession().setTimeout(timeout);
         //1.获取登录的用户名密码（token）
-        UsernamePasswordToken upToken = (UsernamePasswordToken) authenticationToken;
+        UserToken upToken = (UserToken) authenticationToken;
         String username = upToken.getUsername();
         String password = new String( upToken.getPassword());
         //2.根据用户名查询数据库
         QueryWrapper<User> wrapper = Wrappers.query();
-        wrapper.eq("name",username);
+        wrapper.eq("account_id",username);
         User user = userService.getOne(wrapper);
         //3.判断用户是否存在或者密码是否一致
 

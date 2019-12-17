@@ -1,8 +1,14 @@
-package com.songsmily.petapi.config;
+package com.songsmily.petapi.shiro.config;
 
-import com.songsmily.petapi.realm.GitUserRealm;
+import com.songsmily.petapi.shiro.common.UserModularRealmAuthenticator;
+import com.songsmily.petapi.shiro.realm.APIUserRealm;
 import com.songsmily.petapi.session.CustomSessionManager;
+import com.songsmily.petapi.shiro.realm.REGUserRealm;
+import org.apache.shiro.authc.Authenticator;
+import org.apache.shiro.authc.pam.AtLeastOneSuccessfulStrategy;
+import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
 import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
@@ -15,26 +21,45 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @Configuration
 public class ShiroConfig {
     @Bean
-    public GitUserRealm getRealm(){
-        return new GitUserRealm();
+    public APIUserRealm getRealm(){
+        return new APIUserRealm();
     }
 
     @Bean
-    public SecurityManager getSecurityManager(GitUserRealm realm) {
+    public SecurityManager getSecurityManager() {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-        //将自定义的会话管理器注册到安全管理器中
-        securityManager.setSessionManager(sessionManager());
-
-        //将自定义的redis缓存管理器注册到安全管理器中
+        //设置realm.
+        securityManager.setAuthenticator(modularRealmAuthenticator());
+        List<Realm> realms = new ArrayList<>();
+        //添加多个Realm
+        realms.add(apiUserRealm());
+        realms.add(regUserRealm());
+        securityManager.setRealms(realms);
+        // 自定义缓存实现 使用redis
         securityManager.setCacheManager(cacheManager());
-        securityManager.setRealm(realm);
-        return  securityManager;
+        // 自定义session管理 使用redis
+        securityManager.setSessionManager(sessionManager());
+        //注入记住我管理器;
+//        securityManager.setRememberMeManager(rememberMeManager());
+        return securityManager;
+    }
+    /**
+     * 系统自带的Realm管理，主要针对多realm
+     * */
+    @Bean
+    public ModularRealmAuthenticator modularRealmAuthenticator(){
+        //自己重写的ModularRealmAuthenticator
+        UserModularRealmAuthenticator modularRealmAuthenticator = new UserModularRealmAuthenticator();
+        modularRealmAuthenticator.setAuthenticationStrategy(new AtLeastOneSuccessfulStrategy());
+        return modularRealmAuthenticator;
     }
 
     @Bean
@@ -65,7 +90,7 @@ public class ShiroConfig {
 //        //使用过滤器的形式配置请求地址的依赖角色
 //        filterMap.put("/music/selectAll","roles[users]");
 //
-        filterMap.put("/music/**","authc");//当前请求地址必须认证之后可以访问
+        filterMap.put("/music/**","anon");//当前请求地址必须认证之后可以访问
         filterMap.put("/user/**","authc");
         filterMap.put("/user/login","anon");
 
@@ -73,6 +98,17 @@ public class ShiroConfig {
 
         return filterFactory;
     }
+
+    @Bean
+    public APIUserRealm apiUserRealm(){
+        return new APIUserRealm();
+    }
+
+    @Bean
+    public REGUserRealm regUserRealm(){
+        return new REGUserRealm();
+    }
+
 
     /**
      * 1.redis的控制器，操作redis

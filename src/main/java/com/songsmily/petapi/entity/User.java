@@ -1,23 +1,20 @@
 package com.songsmily.petapi.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import org.crazycake.shiro.AuthCachePrincipal;
 
 import java.io.Serializable;
-import java.io.Serializable;
-
 
 /**
  * (User)表实体类
  *
  * @author SongSmily
- * @since 2019-12-06 16:47:11
+ * @since 2019-12-16 06:13:44
  */
 @SuppressWarnings("serial")
-public class User extends Model<User> implements Serializable,AuthCachePrincipal {
+public class User extends Model<User> implements Serializable, AuthCachePrincipal {
     private static final long serialVersionUID = 4297464181093070302L;
 
     //唯一标识
@@ -27,10 +24,18 @@ public class User extends Model<User> implements Serializable,AuthCachePrincipal
     private String accountId;
     //用户名
     private String name;
+    //电话号码
+    private String phone;
+    //真实姓名
+    private String realName;
+    //地区
+    private String location;
+    //具体地址
+    private String addr;
+    //邮箱
+    private String email;
     //密码
     private String password;
-    //token值
-    private String token;
     //创建时间
     private Long gmtCreate;
     //修改时间
@@ -39,24 +44,10 @@ public class User extends Model<User> implements Serializable,AuthCachePrincipal
     private String avatarUrl;
     //账户类型
     private Integer accountType;
-    
-    private String bio;
-    //住址
-    private String location;
-
-    //角色信息
-    @TableField(exist = false)
-
-    private Roles role;
-
-
-    public Roles getRole() {
-        return role;
-    }
-
-    public void setRole(Roles role) {
-        this.role = role;
-    }
+    //账户状态
+    private Integer status;
+    //token值
+    private String token;
 
 
     public Integer getId() {
@@ -83,20 +74,52 @@ public class User extends Model<User> implements Serializable,AuthCachePrincipal
         this.name = name;
     }
 
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getAddr() {
+        return addr;
+    }
+
+    public void setAddr(String addr) {
+        this.addr = addr;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getPassword() {
         return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
     }
 
     public Long getGmtCreate() {
@@ -131,38 +154,20 @@ public class User extends Model<User> implements Serializable,AuthCachePrincipal
         this.accountType = accountType;
     }
 
-    public String getBio() {
-        return bio;
+    public Integer getStatus() {
+        return status;
     }
 
-    public void setBio(String bio) {
-        this.bio = bio;
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
-    public String getLocation() {
-        return location;
+    public String getToken() {
+        return token;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", accountId='" + accountId + '\'' +
-                ", name='" + name + '\'' +
-                ", password='" + password + '\'' +
-                ", token='" + token + '\'' +
-                ", gmtCreate=" + gmtCreate +
-                ", gmtModified=" + gmtModified +
-                ", avatarUrl='" + avatarUrl + '\'' +
-                ", accountType=" + accountType +
-                ", bio='" + bio + '\'' +
-                ", location='" + location + '\'' +
-                ", role=" + role +
-                '}';
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
+    public void setToken(String token) {
+        this.token = token;
     }
 
     /**
@@ -176,7 +181,28 @@ public class User extends Model<User> implements Serializable,AuthCachePrincipal
     }
 
     @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", accountId='" + accountId + '\'' +
+                ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                ", realName='" + realName + '\'' +
+                ", location='" + location + '\'' +
+                ", addr='" + addr + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", avatarUrl='" + avatarUrl + '\'' +
+                ", accountType=" + accountType +
+                ", status=" + status +
+                ", token='" + token + '\'' +
+                '}';
+    }
+
+    @Override
     public String getAuthCacheKey() {
         return null;
     }
-}
+    }

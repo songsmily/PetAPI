@@ -46,6 +46,7 @@ public class UserController extends ApiController {
     @GetMapping("/returnUserInfo")
     public Result returnUserInfo(){
         User user  = (User) SecurityUtils.getSubject().getPrincipal();
+
         System.err.println("-----User" + user.toString());
         Map<String,Object> data = new HashMap<>();
         data.put("accountId",user.getAccountId());
@@ -53,7 +54,6 @@ public class UserController extends ApiController {
         data.put("id",user.getId());
         data.put("avatarUrl",user.getAvatarUrl());
         data.put("name",user.getName());
-        data.put("bio",user.getBio());
         Result result = new Result(data);
         return result;
     }
