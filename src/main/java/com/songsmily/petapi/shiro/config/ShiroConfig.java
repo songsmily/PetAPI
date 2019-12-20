@@ -7,11 +7,14 @@ import com.songsmily.petapi.shiro.realm.REGUserRealm;
 import org.apache.shiro.authc.Authenticator;
 import org.apache.shiro.authc.pam.AtLeastOneSuccessfulStrategy;
 import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
+import org.apache.shiro.codec.Base64;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
+import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.servlet.SimpleCookie;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.crazycake.shiro.RedisCacheManager;
 import org.crazycake.shiro.RedisManager;
@@ -48,7 +51,7 @@ public class ShiroConfig {
         // 自定义session管理 使用redis
         securityManager.setSessionManager(sessionManager());
         //注入记住我管理器;
-//        securityManager.setRememberMeManager(rememberMeManager());
+        securityManager.setRememberMeManager(rememberMeManager());
         return securityManager;
     }
     /**
@@ -60,6 +63,30 @@ public class ShiroConfig {
         UserModularRealmAuthenticator modularRealmAuthenticator = new UserModularRealmAuthenticator();
         modularRealmAuthenticator.setAuthenticationStrategy(new AtLeastOneSuccessfulStrategy());
         return modularRealmAuthenticator;
+    }
+    /**
+     * cookie对象
+     * @return
+     */
+    public SimpleCookie rememberMeCookie() {
+        // 设置cookie名称，对应login.html页面的<input type="checkbox" name="rememberMe"/>
+        SimpleCookie cookie = new SimpleCookie("rememberMe");
+        // 设置cookie的过期时间，单位为秒，这里为一天
+        cookie.setMaxAge(86400);
+        return cookie;
+    }
+
+    /**
+     * cookie管理对象
+     * @return
+     */
+    public CookieRememberMeManager rememberMeManager() {
+        //Cookie 数据存在客户端的浏览器
+        CookieRememberMeManager cookieRememberMeManager = new CookieRememberMeManager();
+        cookieRememberMeManager.setCookie(rememberMeCookie());
+        // rememberMe cookie加密的密钥
+        cookieRememberMeManager.setCipherKey(Base64.decode("3AvVhmFLUs0KTA3Kprsdag=="));
+        return cookieRememberMeManager;
     }
 
     @Bean
@@ -90,8 +117,9 @@ public class ShiroConfig {
 //        //使用过滤器的形式配置请求地址的依赖角色
 //        filterMap.put("/music/selectAll","roles[users]");
 //
-        filterMap.put("/music/**","anon");//当前请求地址必须认证之后可以访问
-        filterMap.put("/user/**","authc");
+        filterMap.put("/music/**","anon");
+        filterMap.put("/user/**","user");//当前请求地址必须认证之后可以访问
+        filterMap.put("/plot/**","user");//当前请求地址必须认证之后可以访问
         filterMap.put("/user/login","anon");
 
         filterFactory.setFilterChainDefinitionMap(filterMap);

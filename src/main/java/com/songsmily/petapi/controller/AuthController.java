@@ -1,37 +1,27 @@
 package com.songsmily.petapi.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.songsmily.petapi.dto.Result;
 import com.songsmily.petapi.entity.User;
-import com.songsmily.petapi.provider.GithubProvider;
 import com.songsmily.petapi.service.AuthService;
 import com.songsmily.petapi.service.UserService;
 import com.songsmily.petapi.shiro.common.UserToken;
 import com.songsmily.petapi.shiro.enums.LoginType;
-import okhttp3.*;
-import okhttp3.RequestBody;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.subject.Subject;
-import org.apiguardian.api.API;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import javax.annotation.Resource;
 
 @Controller
 @CrossOrigin
 public class AuthController {
     //注入用户相关服务类
-    @Autowired
+    @Resource
     UserService userService;
     //注入授权服务类
-    @Autowired
+    @Resource
     AuthService authService;
 
     //注入跳转地址，用于三方接口登录后的页面跳转

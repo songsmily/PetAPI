@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.songsmily.petapi.dao.PlotDao">
+    <select id="queryAll" resultType="com.songsmily.petapi.entity.Build">
+        select * from build
+    </select>
+    <select id="queryPlotAndBuild" resultMap="plot_build_map">
+        select p.*,b.* from build b inner join plot p
+        on p.plot_id=b.plot_id
+    </select>
+    <!--    类-表的对应关系-->
+    <resultMap  id="plot_build_map" type="com.songsmily.petapi.entity.Plot">
+        <!--  因为type的主类是Plot  所以先配置Plot-->
+        <id property="plotId" column="plot_id"></id>
+        <result property="plotName" column="plot_name"></result>
+        <!--  配置成员属性Builds 一对多属性类型：javaType 属性的元素类型：ofType-->
+        <collection property="builds"  ofType="com.songsmily.petapi.entity.Build">
+            <id property="buildId" column="build_id"></id>
+            <result property="buildName" column="build_name"></result>
+        </collection>
+    </resultMap>
+</mapper>

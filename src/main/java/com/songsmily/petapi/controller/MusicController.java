@@ -10,10 +10,6 @@ import com.songsmily.petapi.entity.Music;
 import com.songsmily.petapi.entity.User;
 import com.songsmily.petapi.service.MusicService;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authz.annotation.RequiresAuthentication;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.authz.annotation.RequiresRoles;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;

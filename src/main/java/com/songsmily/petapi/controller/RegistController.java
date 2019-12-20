@@ -7,7 +7,6 @@ import com.songsmily.petapi.dto.Result;
 import com.songsmily.petapi.entity.User;
 import com.songsmily.petapi.service.UserService;
 import com.songsmily.petapi.utils.VerifyCodeUtils;
-import com.sun.org.apache.bcel.internal.classfile.Code;
 import com.zhenzi.sms.ZhenziSmsClient;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +22,6 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 @Controller
@@ -37,7 +34,7 @@ public class RegistController {
     private String appId;
     @Value("${message.appSecret}")
     private String appSecret;
-    @Value("${OSS.url}")
+    @Value("${aliyun.oss.url}")
     private String ossUrl;
 
     @Autowired
@@ -52,6 +49,7 @@ public class RegistController {
         user.setAvatarUrl(ossUrl + "images/newuser.png");
         user.setPassword(new Md5Hash(user.getPassword(),null,3).toString());
         user.setAccountId(user.getPhone());
+        user.setBio("签名是一种态度");
         if (userService.save(user)){
             return new Result(CodeMsg.SUCCESS);
 

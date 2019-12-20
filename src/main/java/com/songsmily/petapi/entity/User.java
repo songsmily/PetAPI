@@ -11,10 +11,10 @@ import java.io.Serializable;
  * (User)表实体类
  *
  * @author SongSmily
- * @since 2019-12-16 06:13:44
+ * @since 2019-12-18 06:53:52
  */
-@SuppressWarnings("serial")
 public class User extends Model<User> implements Serializable, AuthCachePrincipal {
+
     private static final long serialVersionUID = 4297464181093070302L;
 
     //唯一标识
@@ -46,8 +46,10 @@ public class User extends Model<User> implements Serializable, AuthCachePrincipa
     private Integer accountType;
     //账户状态
     private Integer status;
-    //token值
-    private String token;
+    //个性签名
+    private String bio;
+    //信息版本
+    private Integer version;
 
 
     public Integer getId() {
@@ -76,6 +78,28 @@ public class User extends Model<User> implements Serializable, AuthCachePrincipa
 
     public String getPhone() {
         return phone;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", accountId='" + accountId + '\'' +
+                ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                ", realName='" + realName + '\'' +
+                ", location='" + location + '\'' +
+                ", addr='" + addr + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", avatarUrl='" + avatarUrl + '\'' +
+                ", accountType=" + accountType +
+                ", status=" + status +
+                ", bio='" + bio + '\'' +
+                ", version=" + version +
+                '}';
     }
 
     public void setPhone(String phone) {
@@ -162,12 +186,20 @@ public class User extends Model<User> implements Serializable, AuthCachePrincipa
         this.status = status;
     }
 
-    public String getToken() {
-        return token;
+    public String getBio() {
+        return bio;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 
     /**
@@ -179,28 +211,6 @@ public class User extends Model<User> implements Serializable, AuthCachePrincipa
     protected Serializable pkVal() {
         return this.id;
     }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", accountId='" + accountId + '\'' +
-                ", name='" + name + '\'' +
-                ", phone='" + phone + '\'' +
-                ", realName='" + realName + '\'' +
-                ", location='" + location + '\'' +
-                ", addr='" + addr + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", gmtCreate=" + gmtCreate +
-                ", gmtModified=" + gmtModified +
-                ", avatarUrl='" + avatarUrl + '\'' +
-                ", accountType=" + accountType +
-                ", status=" + status +
-                ", token='" + token + '\'' +
-                '}';
-    }
-
     @Override
     public String getAuthCacheKey() {
         return null;

@@ -2,23 +2,17 @@ package com.songsmily.petapi.shiro.realm;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.songsmily.petapi.entity.Roles;
 import com.songsmily.petapi.entity.User;
 import com.songsmily.petapi.service.UserService;
 import com.songsmily.petapi.shiro.common.UserToken;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
-import org.apache.shiro.authz.Permission;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
-import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class APIUserRealm extends AuthorizingRealm {
 

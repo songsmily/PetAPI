@@ -58,7 +58,7 @@ public class AuthServiceImpl implements AuthService {
      * @param state
      * @return
      */
-    public User QQAuth(String code,String state){
+    public User QQAuth(String code, String state){
         /**
          * 封装accesstoken并发送请求获取user信息
          */
@@ -78,8 +78,6 @@ public class AuthServiceImpl implements AuthService {
             //判断用户是是否已存在数据库中
             if (null == user){
                 user = new User();
-                String token = String.valueOf(UUID.randomUUID());
-                user.setToken(token);
                 if (!charCodeFilt.isHasEmoji(qqUser.getNickname())){
                     qqUser.setNickname("昵称(含非法字符)");
                 }
@@ -88,8 +86,8 @@ public class AuthServiceImpl implements AuthService {
                 user.setGmtCreate(System.currentTimeMillis());
                 user.setGmtModified(user.getGmtCreate());
                 user.setAvatarUrl(String.valueOf(qqUser.getFigureurl_2()));
-                user.setLocation(String.valueOf(qqUser.getCity()));
                 user.setAccountType(2);
+                user.setBio("签名是一种态度");
                 //qq授权用户密码为openId哈希散列3次得到
                 user.setPassword(new Md5Hash(openId,null,3).toString());
 
@@ -118,8 +116,6 @@ public class AuthServiceImpl implements AuthService {
             User user = userService.getOne(queryWrapper);
             if (null == user){
                 user = new User();
-                String token = String.valueOf(UUID.randomUUID());
-                user.setToken(token);
                 user.setName(githubUser.getLogin());
                 user.setAccountId(String.valueOf(githubUser.getId()));
                 user.setGmtCreate(System.currentTimeMillis());
@@ -127,6 +123,7 @@ public class AuthServiceImpl implements AuthService {
                 user.setAvatarUrl(String.valueOf(githubUser.getAvatarUrl()));
                 user.setAccountType(1);
                 user.setPassword(new Md5Hash(githubUser.getId().toString(),null,3).toString());
+                user.setBio("签名是一种态度");
                 userService.save(user);
             }
             return user;

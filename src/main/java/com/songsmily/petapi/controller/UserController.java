@@ -6,14 +6,18 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.songsmily.petapi.dto.CodeMsg;
 import com.songsmily.petapi.dto.Result;
 import com.songsmily.petapi.entity.User;
 import com.songsmily.petapi.service.UserService;
+import com.songsmily.petapi.utils.ShiroUtil;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -35,8 +39,15 @@ public class UserController extends ApiController {
     /**
      * 服务对象
      */
-    @Resource
+    @Autowired
     private UserService userService;
+
+    @RequestMapping("/isRepeatName")
+    @RequiresPermissions("user-all")
+    public Result isRepeatNickName(String name){
+        Boolean isrepeat =  userService.isRepeatNickName(name);
+        return new Result(isrepeat);
+    }
 
     /**
      * 返回登录用户信息
@@ -45,51 +56,23 @@ public class UserController extends ApiController {
     @RequiresPermissions(value = "user-all")
     @GetMapping("/returnUserInfo")
     public Result returnUserInfo(){
-        User user  = (User) SecurityUtils.getSubject().getPrincipal();
-
-        System.err.println("-----User" + user.toString());
-        Map<String,Object> data = new HashMap<>();
-        data.put("accountId",user.getAccountId());
-        data.put("accountType",user.getAccountType());
-        data.put("id",user.getId());
-        data.put("avatarUrl",user.getAvatarUrl());
-        data.put("name",user.getName());
-        Result result = new Result(data);
-        return result;
+        return userService.returnUserInfo();
     }
+
+
+    @RequiresPermissions("user-all")
+    @RequestMapping("/resetPassword")
+    public Result resetPassword(String password){
+        return userService.resetPassword(password);
+    }
+
     //用户登录
     @RequestMapping(value="/login")
     public String login(String username,String password) {
-        //构造登录令牌
-        try {
 
-            /**
-             * 密码加密：
-             *     shiro提供的md5加密
-             *     Md5Hash:
-             *      参数一：加密的内容
-             *              111111   --- abcd
-             *      参数二：盐（加密的混淆字符串）（用户登录的用户名）
-             *              111111+混淆字符串
-             *      参数三：加密次数
-             *
-             */
-            password = new Md5Hash(password,null,3).toString();
-
-            UsernamePasswordToken upToken = new UsernamePasswordToken(username,password);
-            //1.获取subject
-            Subject subject = SecurityUtils.getSubject();
-
-            //获取session
-            String sid = (String) subject.getSession().getId();
-
-            //2.调用subject进行登录
-            subject.login(upToken);
-            return "登录成功";
-        }catch (Exception e) {
-            return "用户名或密码错误";
-        }
+        return userService.doLogin(username,password);
     }
+    //退出登录
     @RequestMapping("/logOut")
     public String logOut(){
         Subject subject = SecurityUtils.getSubject();
@@ -134,13 +117,13 @@ public class UserController extends ApiController {
 
     /**
      * 修改数据
-     *
      * @param user 实体对象
      * @return 修改结果
      */
-    @PutMapping
-    public R update(@RequestBody User user) {
-        return success(this.userService.updateById(user));
+    @PostMapping("/doUpdate")
+    @RequiresPermissions("user-all")
+    public Result update(@RequestBody User user) {
+        return userService.doUpdate(user);
     }
 
     /**

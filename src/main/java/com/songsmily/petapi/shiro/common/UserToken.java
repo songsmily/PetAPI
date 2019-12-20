@@ -7,7 +7,7 @@ public class UserToken extends UsernamePasswordToken {
     private String loginType;
 
     public UserToken(final String username, final String password,String loginType) {
-        super(username,password);
+        super(username,password,true);
         this.loginType = loginType;
     }
 
