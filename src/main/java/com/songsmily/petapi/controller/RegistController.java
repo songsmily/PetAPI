@@ -130,7 +130,7 @@ public class RegistController {
         // 生成随机字串
         String verifyCode = VerifyCodeUtils.generateVerifyCode(4);
         // 存入会话session
-        HttpSession session = request.getSession(true);
+        HttpSession session = request.getSession();
         // 删除以前的
         session.removeAttribute("verCode");
         session.removeAttribute("codeTime");

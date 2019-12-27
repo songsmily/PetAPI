@@ -3,9 +3,13 @@ package com.songsmily.petapi;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.aliyun.oss.internal.OSSUtils;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.songsmily.petapi.dao.PettypeDao;
 import com.songsmily.petapi.dao.PlotDao;
+import com.songsmily.petapi.entity.Pettype;
 import com.songsmily.petapi.service.impl.MailServiceImpl;
 import com.songsmily.petapi.utils.OssUtil;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,8 +20,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @SpringBootTest
 class PetApiApplicationTests {
@@ -30,6 +33,58 @@ class PetApiApplicationTests {
     PlotDao plotDao;
     @Resource
     OssUtil ossUtils;
+    @Resource
+    PettypeDao pettypeDao;
+
+    @Test
+    public void testPet(){
+        List<Pettype> pettypes = pettypeDao.selectList(null);
+        Set<String> setOne = new HashSet<>();
+        Set<String> setTwo = new HashSet<>();
+
+        for (Pettype pettype:pettypes) {
+            setOne.add(pettype.getPetClassifyOne());
+            setTwo.add(pettype.getPetClassifyTwo());
+        }
+        List<String> list = new ArrayList<>(setTwo);
+        list.sort(null);
+        System.err.println(list);
+        System.err.println(setTwo);
+
+        List<Map<String,Object>> resultOne = new ArrayList<>();
+        for (String itemOne : setOne){
+            Map<String, Object> mapOne = new HashMap<>();
+            mapOne.put("label", itemOne);
+            mapOne.put("value", 1);
+            List<Map<String,Object>> resultTwo = new ArrayList<>();
+            for (String itemTwo :setTwo){
+                Map<String, Object> mapTwo = new HashMap<>();
+                mapTwo.put("label", itemTwo);
+                mapTwo.put("value", 2);
+                List<Map<String,Object>> foorThree = new ArrayList<>();
+                Boolean pos = false;
+                for (Pettype pettypeThree:pettypes) {
+                    if (pettypeThree.getPetClassifyTwo().equals(itemTwo) && pettypeThree.getPetClassifyOne().equals(itemOne)){
+                        pos = true;
+                        Map<String, Object> mapThree = new HashMap<>();
+                        mapThree.put("label", pettypeThree.getPetClassifyThree());
+                        mapThree.put("value", pettypeThree.getPetTypeId());
+                        foorThree.add(mapThree);
+                    }
+                }
+                if (pos){
+                    mapTwo.put("children",foorThree);
+                    resultTwo.add(mapTwo);
+                    mapOne.put("children",resultTwo);
+                }
+
+            }
+            resultOne.add(mapOne);
+        }
+
+
+        System.err.println(JSONObject.toJSONString( resultOne));
+    }
     @Test
     public  void testOss(){
         String str = "http://oss.songsmily.cn/images/1576794405596.jpeg";

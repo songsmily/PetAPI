@@ -47,9 +47,9 @@ public class ShiroConfig {
         realms.add(regUserRealm());
         securityManager.setRealms(realms);
         // 自定义缓存实现 使用redis
-        securityManager.setCacheManager(cacheManager());
+//        securityManager.setCacheManager(cacheManager());
         // 自定义session管理 使用redis
-        securityManager.setSessionManager(sessionManager());
+//        securityManager.setSessionManager(sessionManager());
         //注入记住我管理器;
         securityManager.setRememberMeManager(rememberMeManager());
         return securityManager;
@@ -159,7 +159,6 @@ public class ShiroConfig {
     public RedisSessionDAO redisSessionDAO() {
         RedisSessionDAO sessionDAO = new RedisSessionDAO();
         sessionDAO.setRedisManager(redisManager());
-        sessionDAO.setExpire(10000);
         return sessionDAO;
     }
 
