@@ -1,12 +1,15 @@
 package com.songsmily.petapi.shiro.config;
 
 import com.songsmily.petapi.shiro.common.UserModularRealmAuthenticator;
+import com.songsmily.petapi.shiro.common.UserModularRealmAuthorizer;
 import com.songsmily.petapi.shiro.realm.APIUserRealm;
 import com.songsmily.petapi.session.CustomSessionManager;
+import com.songsmily.petapi.shiro.realm.AdminUserRealm;
 import com.songsmily.petapi.shiro.realm.REGUserRealm;
 import org.apache.shiro.authc.Authenticator;
 import org.apache.shiro.authc.pam.AtLeastOneSuccessfulStrategy;
 import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
+import org.apache.shiro.authz.ModularRealmAuthorizer;
 import org.apache.shiro.codec.Base64;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.realm.Realm;
@@ -45,6 +48,8 @@ public class ShiroConfig {
         //添加多个Realm
         realms.add(apiUserRealm());
         realms.add(regUserRealm());
+        realms.add(adminUserRealm());
+        securityManager.setAuthorizer(modularRealmAuthorizer());
         securityManager.setRealms(realms);
         // 自定义缓存实现 使用redis
 //        securityManager.setCacheManager(cacheManager());
@@ -64,6 +69,16 @@ public class ShiroConfig {
         modularRealmAuthenticator.setAuthenticationStrategy(new AtLeastOneSuccessfulStrategy());
         return modularRealmAuthenticator;
     }
+    /**
+     * 系统自带的Realm管理，主要针对多realm 授权
+     */
+    @Bean
+    public ModularRealmAuthorizer modularRealmAuthorizer() {
+        //自己重写的ModularRealmAuthorizer
+        UserModularRealmAuthorizer modularRealmAuthorizer = new UserModularRealmAuthorizer();
+        return modularRealmAuthorizer;
+    }
+
     /**
      * cookie对象
      * @return
@@ -120,7 +135,8 @@ public class ShiroConfig {
         filterMap.put("/music/**","anon");
         filterMap.put("/user/**","user");//当前请求地址必须认证之后可以访问
         filterMap.put("/plot/**","user");//当前请求地址必须认证之后可以访问
-        filterMap.put("/user/login","anon");
+//        filterMap.put("/admin/**","user");//当前请求地址必须认证之后可以访问
+        filterMap.put("/admin/login","anon");
 
         filterFactory.setFilterChainDefinitionMap(filterMap);
 
@@ -135,6 +151,10 @@ public class ShiroConfig {
     @Bean
     public REGUserRealm regUserRealm(){
         return new REGUserRealm();
+    }
+    @Bean
+    public AdminUserRealm adminUserRealm(){
+        return new AdminUserRealm();
     }
 
 

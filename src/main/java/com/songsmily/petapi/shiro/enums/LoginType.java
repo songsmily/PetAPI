@@ -1,7 +1,7 @@
 package com.songsmily.petapi.shiro.enums;
 
 public enum  LoginType {
-    APIUSER("APIUser"),  REGUSER("REGUser"), TEACHER("Teacher");
+    APIUSER("APIUser"),  REGUSER("REGUser"), ADMINUSER("AdminUser");
 
     private String type;
 

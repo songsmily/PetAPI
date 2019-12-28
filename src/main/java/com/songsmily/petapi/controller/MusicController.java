@@ -51,8 +51,7 @@ public class MusicController extends ApiController {
 //    @RequiresPermissions(value = "user-all")
     @GetMapping("/selectAll")
     public R selectAll(){
-        User use = (User) SecurityUtils.getSubject().getPrincipal();
-        System.out.println(use);
+
         return success(this.musicService.list());
     }
 

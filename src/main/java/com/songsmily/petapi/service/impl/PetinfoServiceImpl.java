@@ -37,7 +37,7 @@ public class PetinfoServiceImpl extends ServiceImpl<PetinfoDao, Petinfo> impleme
      */
     @Override
     public Result doUpload(Petinfo petinfo) {
-        User user = ShiroUtil.getUser();
+        User user = ShiroUtil.getUser(new User());
         //上传图片
         MultipartFile multipartFile = BASE64DecodedMultipartFile.base64ToMultipart(petinfo.getPetImageUrl());
         String res = ossUtil.uploadImg2Oss(multipartFile);
@@ -59,7 +59,7 @@ public class PetinfoServiceImpl extends ServiceImpl<PetinfoDao, Petinfo> impleme
      */
     @Override
     public Result selectAllPetInfos() {
-        User user = ShiroUtil.getUser();
+        User user = ShiroUtil.getUser(new User());
         QueryWrapper wrapper = new QueryWrapper();
         wrapper.eq("hoste_id",user.getId());
         Result result = new Result(petinfoDao.selectList(wrapper));

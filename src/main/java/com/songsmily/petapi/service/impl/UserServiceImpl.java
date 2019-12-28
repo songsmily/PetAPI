@@ -39,7 +39,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     OssUtil ossUtil;
     @Override
     public Result returnUserInfo() {
-        User user  = (User) ShiroUtil.getUser();
+        User user  = (User) ShiroUtil.getUser(new User());
         System.err.println("----" + user);
         Map<String,Object> data = new HashMap<>();
         data.put("accountId",user.getAccountId());
@@ -91,7 +91,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 
     @Override
     public Boolean isRepeatNickName(String name) {
-        User user = ShiroUtil.getUser();
+        User user = ShiroUtil.getUser(new User());
         QueryWrapper<User> wrapper = new QueryWrapper();
         wrapper.eq("name",name);
         wrapper.ne("id",user.getId());
@@ -100,7 +100,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 
     @Override
     public Result doUpdate(User user) {
-        User oldUser = ShiroUtil.getUser();
+        User oldUser = ShiroUtil.getUser(new User());
         System.err.println(user.getAvatarUrl());
         System.err.println(oldUser.getAvatarUrl());
         System.err.println(!user.getAvatarUrl().equals(oldUser.getAvatarUrl()));
@@ -127,7 +127,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 
     @Override
     public Result resetPassword(String password) {
-        User oldUser =  ShiroUtil.getUser();
+        User oldUser =  ShiroUtil.getUser(new User());
         User user = new User();
         user.setPassword(CommonUtils.setPassword(password));
         user.setId(oldUser.getId());
