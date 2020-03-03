@@ -31,7 +31,7 @@ public class PetinfoServiceImpl extends ServiceImpl<PetinfoDao, Petinfo> impleme
     PetinfoDao petinfoDao;
 
     /**
-     * 上传宠物信息w
+     * 上传宠物信息
      * @param petinfo
      * @return
      */
