@@ -35,8 +35,10 @@ public class UserModularRealmAuthenticator extends ModularRealmAuthenticator {
         // 登录类型对应的所有Realm
         List<Realm> typeRealms = new ArrayList<>();
         for (Realm realm : realms) {
-            if (realm.getName().contains(loginType))
-            typeRealms.add(realm);
+            if (realm.getName().contains(loginType)){
+                typeRealms.add(realm);
+
+            }
         }
 
         // 判断是单Realm还是多Realm

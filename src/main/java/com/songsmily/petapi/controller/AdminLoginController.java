@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
-@RequestMapping("/admin/login")
+@RequestMapping("/login")
 @RestController
 @Controller
 public class AdminLoginController {
     @Resource
     AdminUserService adminUserService;
 
-    @RequestMapping("/doLogin")
+    @RequestMapping("/adminLogin")
     public Result doLogin(AdminUser adminUser){
 
         return adminUserService.doLogin(adminUser);

@@ -11,18 +11,20 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 public class APIUserRealm extends AuthorizingRealm {
-
-    public void setName(String name) {
-        super.setName("customRealm");
+    private Logger logger= LoggerFactory.getLogger(APIUserRealm.class);
+    @Override
+    public String getName() {
+        return "APIUser";
     }
 
     @Autowired
     private UserService userService;
-
     /**
      * 授权方法
      *      操作的时候，判断用户是否具有响应的权限
@@ -33,7 +35,7 @@ public class APIUserRealm extends AuthorizingRealm {
      */
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         //1.获取已认证的用户数据
-        System.err.println("进入授权方法");
+        System.err.println("进入API用户授权方法");
         User user = (User) principalCollection.getPrimaryPrincipal();//得到唯一的安全数据
         //2.根据用户数据获取用户的权限信息（所有角色，所有权限）
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();

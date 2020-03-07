@@ -34,10 +34,18 @@ import java.util.Map;
 
 @Configuration
 public class ShiroConfig {
-    @Bean
-    public APIUserRealm getRealm(){
-        return new APIUserRealm();
-    }
+//    @Bean
+//    public APIUserRealm getRealm(){
+//        return new APIUserRealm();
+//    }
+//    @Bean
+//    public AdminUserRealm getRealm(){
+//        return new AdminUserRealm();
+//    }
+//    @Bean
+//    public REGUserRealm getRealm(){
+//        return new REGUserRealm();
+//    }
 
     @Bean
     public SecurityManager getSecurityManager() {
@@ -46,9 +54,9 @@ public class ShiroConfig {
         securityManager.setAuthenticator(modularRealmAuthenticator());
         List<Realm> realms = new ArrayList<>();
         //添加多个Realm
+        realms.add(adminUserRealm());
         realms.add(apiUserRealm());
         realms.add(regUserRealm());
-        realms.add(adminUserRealm());
         securityManager.setAuthorizer(modularRealmAuthorizer());
         securityManager.setRealms(realms);
         // 自定义缓存实现 使用redis
@@ -133,10 +141,12 @@ public class ShiroConfig {
 //        filterMap.put("/music/selectAll","roles[users]");
 //
         filterMap.put("/music/**","anon");
+
         filterMap.put("/user/**","user");//当前请求地址必须认证之后可以访问
+        filterMap.put("/admin/**","user");//当前请求地址必须认证之后可以访问
+
         filterMap.put("/plot/**","user");//当前请求地址必须认证之后可以访问
 //        filterMap.put("/admin/**","user");//当前请求地址必须认证之后可以访问
-        filterMap.put("/admin/login","anon");
 
         filterFactory.setFilterChainDefinitionMap(filterMap);
 
@@ -223,5 +233,4 @@ public class ShiroConfig {
         authorizationAttributeSourceAdvisor.setSecurityManager(securityManager);
         return authorizationAttributeSourceAdvisor;
     }
-
 }

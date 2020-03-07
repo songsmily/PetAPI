@@ -10,6 +10,7 @@ import com.songsmily.petapi.dto.Result;
 import com.songsmily.petapi.entity.AdminUser;
 import com.songsmily.petapi.service.AdminUserService;
 import com.songsmily.petapi.utils.ShiroUtil;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,9 +36,10 @@ public class AdminUserController extends ApiController {
     @RequiresPermissions("admin-all")
     @RequestMapping("returnUserInfo")
     public Result returnUserInfo(){
-        AdminUser adminUser = ShiroUtil.getUser(new AdminUser());
-        adminUser.setPassword(null);
-        return new Result(adminUser);
+
+//        AdminUser adminUser = ShiroUtil.getUser(new AdminUser());
+//        adminUser.setPassword(null);
+        return new Result(SecurityUtils.getSubject().getPrincipal());
     }
 
 

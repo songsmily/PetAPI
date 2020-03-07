@@ -28,7 +28,7 @@ public class LoginController {
     public Result doLogin(User user){
         user.setPassword(new Md5Hash(user.getPassword(),null,3).toString());
         try {
-            UserToken userToken = new UserToken(user.getPhone(),user.getPassword(), REGUSER_LOGIN_TYPE);
+            UserToken userToken = new UserToken(user.getName(),user.getPassword(), REGUSER_LOGIN_TYPE);
             //1.获取subject
             Subject subject = SecurityUtils.getSubject();
             //2.调用subject进行登录

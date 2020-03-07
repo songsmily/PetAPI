@@ -4,7 +4,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.songsmily.petapi.dto.CodeMsg;
 import com.songsmily.petapi.dto.Result;
+import com.songsmily.petapi.entity.AdminUser;
 import com.songsmily.petapi.entity.User;
+import com.songsmily.petapi.service.AdminUserService;
 import com.songsmily.petapi.service.UserService;
 import com.songsmily.petapi.utils.VerifyCodeUtils;
 import com.zhenzi.sms.ZhenziSmsClient;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -37,9 +40,11 @@ public class RegistController {
     @Value("${aliyun.oss.url}")
     private String ossUrl;
 
-    @Autowired
+    @Resource
     UserService userService;
 
+    @Resource
+    AdminUserService adminUserService;
     @RequestMapping("doRegist")
     public Result doRegist(@RequestBody User user){
         user.setGmtCreate(System.currentTimeMillis());
@@ -123,12 +128,14 @@ public class RegistController {
     }
     @RequestMapping(value = "yzm")
     public void yzm(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        System.err.println("进入验证码方法");
         response.setHeader("Pragma", "No-cache");
         response.setHeader("Cache-Control", "no-cache");
         response.setDateHeader("Expires", 0);
         response.setContentType("image/jpeg");
         // 生成随机字串
         String verifyCode = VerifyCodeUtils.generateVerifyCode(4);
+        System.err.println(verifyCode);
         // 存入会话session
         HttpSession session = request.getSession();
         // 删除以前的
@@ -154,9 +161,13 @@ public class RegistController {
     }
     @RequestMapping("checkNickname")
     public Result checkNickname(String nickname) throws InterruptedException {
-        QueryWrapper<User> wrapper = new QueryWrapper<>();
-        wrapper.eq("name",nickname);
-        if (userService.getOne(wrapper) == null){
+        QueryWrapper<User> userWrapper = new QueryWrapper<>();
+        userWrapper.eq("name",nickname);
+        QueryWrapper<AdminUser> adminUserQueryWrapper = new QueryWrapper<>();
+
+        adminUserQueryWrapper.eq("username",nickname);
+
+        if (userService.getOne(userWrapper) == null && adminUserService.getOne(adminUserQueryWrapper) == null){
             return new Result(CodeMsg.SUCCESS);
         }else{
             return new Result(CodeMsg.SERVERERROR);
