@@ -13,4 +13,7 @@ import com.songsmily.petapi.entity.Pettype;
 public interface PettypeService extends IService<Pettype> {
 
     Result getPetTypeArray();
+
+
+    Result getPetTypeById(Integer petTypeId);
 }

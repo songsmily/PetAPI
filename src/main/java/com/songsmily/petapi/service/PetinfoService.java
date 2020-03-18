@@ -17,4 +17,6 @@ public interface PetinfoService extends IService<Petinfo> {
     Result selectAllPetInfos();
 
     Result selectById(String petId);
+
+    Result doReUpload(Petinfo petinfo);
 }

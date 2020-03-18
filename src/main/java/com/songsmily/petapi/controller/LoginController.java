@@ -3,6 +3,7 @@ package com.songsmily.petapi.controller;
 import com.songsmily.petapi.dto.CodeMsg;
 import com.songsmily.petapi.dto.Result;
 import com.songsmily.petapi.entity.User;
+import com.songsmily.petapi.enums.ResultEnum;
 import com.songsmily.petapi.service.UserService;
 import com.songsmily.petapi.shiro.common.UserToken;
 import com.songsmily.petapi.shiro.enums.LoginType;
@@ -33,9 +34,9 @@ public class LoginController {
             Subject subject = SecurityUtils.getSubject();
             //2.调用subject进行登录
             subject.login(userToken);
-            return new Result(CodeMsg.SUCCESS);
+            return new Result(ResultEnum.SUCCESS);
         } catch (Exception e) {
-           return new Result(CodeMsg.AUTHENERROR);
+           return new Result(ResultEnum.NOT_AUTH);
         }
     }
 }

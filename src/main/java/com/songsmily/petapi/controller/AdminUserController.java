@@ -8,10 +8,13 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.songsmily.petapi.dto.Result;
 import com.songsmily.petapi.entity.AdminUser;
+import com.songsmily.petapi.enums.ResultEnum;
 import com.songsmily.petapi.service.AdminUserService;
 import com.songsmily.petapi.utils.ShiroUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.subject.Subject;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -36,10 +39,9 @@ public class AdminUserController extends ApiController {
     @RequiresPermissions("admin-all")
     @RequestMapping("returnUserInfo")
     public Result returnUserInfo(){
-
+        return adminUserService.returnAdminUserInfo();
 //        AdminUser adminUser = ShiroUtil.getUser(new AdminUser());
 //        adminUser.setPassword(null);
-        return new Result(SecurityUtils.getSubject().getPrincipal());
     }
 
 
@@ -97,5 +99,11 @@ public class AdminUserController extends ApiController {
     @DeleteMapping
     public R delete(@RequestParam("idList") List<Long> idList) {
         return success(this.adminUserService.removeByIds(idList));
+    }
+    @RequestMapping("/logOut")
+    public Result logOut(){
+        Subject subject = SecurityUtils.getSubject();
+        subject.logout();
+        return new Result(ResultEnum.SUCCESS);
     }
 }

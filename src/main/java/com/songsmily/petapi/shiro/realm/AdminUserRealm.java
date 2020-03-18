@@ -17,6 +17,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 public class AdminUserRealm extends AuthorizingRealm {
 
     private Logger logger= LoggerFactory.getLogger(AdminUserRealm.class);
@@ -44,7 +47,17 @@ public class AdminUserRealm extends AuthorizingRealm {
         //2.根据用户数据获取用户的权限信息（所有角色，所有权限）
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         info.addRole("admin");
+
         info.addStringPermission("admin-all");
+        if (adminUser.getAccountType() == 1){
+            info.addStringPermission("pet-admin");
+        }else if (adminUser.getAccountType() == 2){
+
+        }else{
+            info.addStringPermission("sys-admin");
+
+        }
+
         return info;
     }
 

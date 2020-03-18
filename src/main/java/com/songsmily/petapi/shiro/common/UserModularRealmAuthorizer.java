@@ -15,9 +15,8 @@ public class UserModularRealmAuthorizer extends ModularRealmAuthorizer {
         for (Realm realm : getRealms()) {
             if (!(realm instanceof Authorizer)){ continue;}
             //  todo 授权配置
-            System.err.println(realm.getName());
             if (realm.getName().contains(LoginType.ADMINUSER.toString())) {// 判断realm
-                if (permission.contains("admin-all")) {// 判断是否改realm的资源
+                if (permission.contains("admin-all") || permission.contains("pet-admin") ||permission.contains("sys-admin")  ) {// 判断是否改realm的资源
                     return ((AdminUserRealm) realm).isPermitted(principals, permission);    // 使用改realm的授权方法
                 }
             }else if (realm.getName().contains(LoginType.REGUSER.toString())){

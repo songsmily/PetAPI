@@ -2,6 +2,7 @@ package com.songsmily.petapi.exception;
 
 import com.songsmily.petapi.dto.CodeMsg;
 import com.songsmily.petapi.dto.Result;
+import com.songsmily.petapi.enums.ResultEnum;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,6 +21,6 @@ public class BaseAuthenExceptionHandler {
     @RequestMapping("/UnLoginError")
     @ResponseBody
     public Result unLoginError(){
-        return new Result(CodeMsg.AUTHENERROR);
+        return new Result(ResultEnum.NOT_LOGIN);
     }
 }

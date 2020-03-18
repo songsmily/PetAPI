@@ -58,6 +58,15 @@ public class PetinfoController extends ApiController {
     public Result doUpload(@RequestBody Petinfo petinfo){
         return petinfoService.doUpload(petinfo);
     }
+
+    /**
+     * 修改宠物信息
+     */
+    @RequiresPermissions("user-all")
+    @RequestMapping("doReUpload")
+    public Result doReUpload(@RequestBody Petinfo petinfo){
+        return petinfoService.doReUpload(petinfo);
+    }
     /**
      * 分页查询所有数据
      *

@@ -6,6 +6,7 @@ import com.songsmily.petapi.dto.CodeMsg;
 import com.songsmily.petapi.dto.Result;
 import com.songsmily.petapi.entity.AdminUser;
 import com.songsmily.petapi.entity.User;
+import com.songsmily.petapi.enums.ResultEnum;
 import com.songsmily.petapi.service.AdminUserService;
 import com.songsmily.petapi.service.UserService;
 import com.songsmily.petapi.utils.VerifyCodeUtils;
@@ -56,10 +57,10 @@ public class RegistController {
         user.setAccountId(user.getPhone());
         user.setBio("签名是一种态度");
         if (userService.save(user)){
-            return new Result(CodeMsg.SUCCESS);
+            return new Result(ResultEnum.SUCCESS);
 
         }else{
-            return new Result(CodeMsg.SERVERERROR);
+            return new Result(ResultEnum.ERROR);
         }
     }
     /**
@@ -80,7 +81,7 @@ public class RegistController {
         System.err.println("验证码为: "  + code);
         // 将认证码存入SESSION
         httpSession.setAttribute("MessageCode",json);
-        return new Result(CodeMsg.SUCCESS);
+        return new Result(ResultEnum.SUCCESS);
 //        Map<String, String> params = new HashMap<String, String>();
 //        params.put("message", "尊敬的宠物之家用户，您的验证码为：" + code + "，该验证码5分钟内有效，请勿泄露于他人。");
 //        params.put("number", memPhone);
@@ -105,13 +106,13 @@ public class RegistController {
     @RequestMapping("checkMessageCode")
     public Result checkMessageCode(Integer messageCode,HttpSession httpSession){
         if (httpSession.getAttribute("MessageCode") == null){
-            return new Result(CodeMsg.CHECKERROR);
+            return new Result(ResultEnum.ERROR);
         }
         JSONObject json = (JSONObject) httpSession.getAttribute("MessageCode");
         if (messageCode == json.getIntValue("code")){
-            return new Result(CodeMsg.SUCCESS);
+            return new Result(ResultEnum.SUCCESS);
         }else{
-            return new Result(CodeMsg.CHECKERROR);
+            return new Result(ResultEnum.ERROR);
         }
     }
 
@@ -121,9 +122,9 @@ public class RegistController {
         System.err.println(httpSession.getAttribute("verCode"));
         System.err.println(imgYzm);
         if (imgYzm.equals(httpSession.getAttribute("verCode"))){
-            return new Result(CodeMsg.SUCCESS);
+            return new Result(ResultEnum.SUCCESS);
         }else{
-            return new Result(CodeMsg.CHECKERROR);
+            return new Result(ResultEnum.ERROR);
         }
     }
     @RequestMapping(value = "yzm")
@@ -154,9 +155,9 @@ public class RegistController {
         QueryWrapper<User> wrapper = new QueryWrapper<>();
         wrapper.eq("phone",phone);
         if (userService.getOne(wrapper) == null){
-            return new Result(CodeMsg.SUCCESS);
+            return new Result(ResultEnum.SUCCESS);
         }else{
-            return new Result(CodeMsg.SERVERERROR);
+            return new Result(ResultEnum.ERROR);
         }
     }
     @RequestMapping("checkNickname")
@@ -168,9 +169,9 @@ public class RegistController {
         adminUserQueryWrapper.eq("username",nickname);
 
         if (userService.getOne(userWrapper) == null && adminUserService.getOne(adminUserQueryWrapper) == null){
-            return new Result(CodeMsg.SUCCESS);
+            return new Result(ResultEnum.SUCCESS);
         }else{
-            return new Result(CodeMsg.SERVERERROR);
+            return new Result(ResultEnum.ERROR);
         }
     }
 

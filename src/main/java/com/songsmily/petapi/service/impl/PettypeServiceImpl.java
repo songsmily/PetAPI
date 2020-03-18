@@ -1,5 +1,6 @@
 package com.songsmily.petapi.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.songsmily.petapi.dao.PettypeDao;
 import com.songsmily.petapi.dto.Result;
@@ -37,12 +38,12 @@ public class PettypeServiceImpl extends ServiceImpl<PettypeDao, Pettype> impleme
         for (String itemOne : setOne) {
             Map<String, Object> mapOne = new HashMap<>();
             mapOne.put("label", itemOne);
-            mapOne.put("value", 1);
+            mapOne.put("value", itemOne);
             List<Map<String, Object>> resultTwo = new ArrayList<>();
             for (String itemTwo : setTwo) {
                 Map<String, Object> mapTwo = new HashMap<>();
                 mapTwo.put("label", itemTwo);
-                mapTwo.put("value", 2);
+                mapTwo.put("value", itemTwo);
                 List<Map<String, Object>> foorThree = new ArrayList<>();
                 Boolean pos = false;
                 for (Pettype pettypeThree : pettypes) {
@@ -50,7 +51,7 @@ public class PettypeServiceImpl extends ServiceImpl<PettypeDao, Pettype> impleme
                         pos = true;
                         Map<String, Object> mapThree = new HashMap<>();
                         mapThree.put("label", pettypeThree.getPetClassifyThree());
-                        mapThree.put("value", pettypeThree.getPetTypeId());
+                        mapThree.put("value", pettypeThree.getPetClassifyThree());
                         foorThree.add(mapThree);
                     }
                 }
@@ -65,5 +66,12 @@ public class PettypeServiceImpl extends ServiceImpl<PettypeDao, Pettype> impleme
         }
         return new Result(resultOne);
     }
+
+    @Override
+    public Result getPetTypeById(Integer petTypeId) {
+        Pettype pettype  = pettypeDao.selectById(petTypeId);
+        return new Result(pettype);
+    }
+
 
 }

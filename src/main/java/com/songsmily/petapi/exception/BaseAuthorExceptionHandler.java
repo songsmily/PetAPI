@@ -2,6 +2,7 @@ package com.songsmily.petapi.exception;
 
 import com.songsmily.petapi.dto.CodeMsg;
 import com.songsmily.petapi.dto.Result;
+import com.songsmily.petapi.enums.ResultEnum;
 import com.sun.tools.javac.jvm.Code;
 import org.apache.shiro.authz.AuthorizationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -22,6 +23,6 @@ public class BaseAuthorExceptionHandler {
     @ExceptionHandler(value = AuthorizationException.class)
     @ResponseBody
     public Result error(HttpServletRequest request, HttpServletResponse response, AuthorizationException e) {
-        return new Result(CodeMsg.AUTHORERROR);
+        return new Result(ResultEnum.NOT_AUTH);
     }
 }

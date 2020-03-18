@@ -6,6 +6,7 @@ import com.songsmily.petapi.dao.UserDao;
 import com.songsmily.petapi.dto.CodeMsg;
 import com.songsmily.petapi.dto.Result;
 import com.songsmily.petapi.entity.User;
+import com.songsmily.petapi.enums.ResultEnum;
 import com.songsmily.petapi.service.UserService;
 import com.songsmily.petapi.utils.BASE64DecodedMultipartFile;
 import com.songsmily.petapi.utils.CommonUtils;
@@ -121,7 +122,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         oldUser.setGmtModified(System.currentTimeMillis());
         ShiroUtil.setUser(oldUser);
         userDao.updateById(oldUser);
-        return new Result(CodeMsg.SUCCESS);
+        return new Result(ResultEnum.SUCCESS);
 
     }
 
@@ -134,10 +135,10 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         if (userDao.updateById(user) == 1){
             oldUser.setPassword(user.getPassword());
             ShiroUtil.setUser(oldUser);
-            return new Result(CodeMsg.SUCCESS);
+            return new Result(ResultEnum.SUCCESS);
 
         }else{
-            return new Result(CodeMsg.SERVERERROR);
+            return new Result(ResultEnum.ERROR);
 
         }
     }

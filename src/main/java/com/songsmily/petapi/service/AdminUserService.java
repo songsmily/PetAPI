@@ -13,4 +13,6 @@ import com.songsmily.petapi.entity.AdminUser;
 public interface AdminUserService extends IService<AdminUser> {
 
     Result doLogin(AdminUser adminUser);
+
+    Result returnAdminUserInfo();
 }

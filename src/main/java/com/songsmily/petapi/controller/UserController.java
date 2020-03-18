@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.songsmily.petapi.dto.CodeMsg;
 import com.songsmily.petapi.dto.Result;
 import com.songsmily.petapi.entity.User;
+import com.songsmily.petapi.enums.ResultEnum;
 import com.songsmily.petapi.service.UserService;
 import com.songsmily.petapi.utils.ShiroUtil;
 import com.sun.org.apache.xpath.internal.operations.Bool;
@@ -74,10 +75,10 @@ public class UserController extends ApiController {
     }
     //退出登录
     @RequestMapping("/logOut")
-    public String logOut(){
+    public Result logOut(){
         Subject subject = SecurityUtils.getSubject();
         subject.logout();
-        return "success";
+        return new Result(ResultEnum.SUCCESS);
     }
 
     /**

@@ -40,6 +40,14 @@ public class PettypeController extends ApiController {
         Result petTypeArray = pettypeService.getPetTypeArray();
         return petTypeArray;
     }
+    /**
+     * 根据宠物分类信息查询详细信息
+     */
+    @RequiresPermissions("user-all")
+    @RequestMapping("/getPetTypeByPetTypeId")
+    public Result getPetTypeById(Integer petTypeId){
+        return pettypeService.getPetTypeById(petTypeId);
+    }
 
     /**
      * 分页查询所有数据

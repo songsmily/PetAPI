@@ -1,5 +1,7 @@
 package com.songsmily.petapi.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import java.io.Serializable;
 
@@ -12,6 +14,7 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 public class Petinfo extends Model<Petinfo> {
     //宠物ID
+    @TableId(value = "pet_id", type = IdType.AUTO)
     private Integer petId;
     //宠物编号
     private String petNo;
