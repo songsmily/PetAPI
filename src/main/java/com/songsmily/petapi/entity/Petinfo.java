@@ -1,9 +1,11 @@
 package com.songsmily.petapi.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 宠物信息表(Petinfo)表实体类
@@ -49,6 +51,41 @@ public class Petinfo extends Model<Petinfo> {
     //宠物状态
     private Integer petStatus;
 
+    //宠物免疫证书 以及免疫信息
+    @TableField(exist = false)
+    private PetCard petCard;
+
+    public PetCard getPetCards() {
+        return petCard;
+    }
+
+    public void setPetCard(PetCard petCard) {
+        this.petCard = petCard;
+    }
+
+    @Override
+    public String toString() {
+        return "Petinfo{" +
+                "petId=" + petId +
+                ", petNo='" + petNo + '\'' +
+                ", petTypeId=" + petTypeId +
+                ", hosteId=" + hosteId +
+                ", petName='" + petName + '\'' +
+                ", petType='" + petType + '\'' +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", petSex='" + petSex + '\'' +
+                ", petHeight=" + petHeight +
+                ", petBirthday='" + petBirthday + '\'' +
+                ", petHairColor='" + petHairColor + '\'' +
+                ", petRaiseAddr='" + petRaiseAddr + '\'' +
+                ", petWeight=" + petWeight +
+                ", petImageUrl='" + petImageUrl + '\'' +
+                ", petDesc='" + petDesc + '\'' +
+                ", petStatus=" + petStatus +
+                ", petCards=" + petCard +
+                '}';
+    }
 
     public Integer getPetId() {
         return petId;
@@ -184,29 +221,6 @@ public class Petinfo extends Model<Petinfo> {
 
     public void setPetStatus(Integer petStatus) {
         this.petStatus = petStatus;
-    }
-
-    @Override
-    public String toString() {
-        return "Petinfo{" +
-                "petId=" + petId +
-                ", petNo='" + petNo + '\'' +
-                ", petTypeId=" + petTypeId +
-                ", hosteId=" + hosteId +
-                ", petName='" + petName + '\'' +
-                ", petType='" + petType + '\'' +
-                ", gmtCreate='" + gmtCreate + '\'' +
-                ", gmtModified='" + gmtModified + '\'' +
-                ", petSex='" + petSex + '\'' +
-                ", petHeight=" + petHeight +
-                ", petBirthday='" + petBirthday + '\'' +
-                ", petHairColor='" + petHairColor + '\'' +
-                ", petRaiseAddr='" + petRaiseAddr + '\'' +
-                ", petWeight=" + petWeight +
-                ", petImageUrl='" + petImageUrl + '\'' +
-                ", petDesc='" + petDesc + '\'' +
-                ", petStatus=" + petStatus +
-                '}';
     }
 
     /**

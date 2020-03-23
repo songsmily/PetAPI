@@ -129,5 +129,14 @@ public class PetinfoServiceImpl extends ServiceImpl<PetinfoDao, Petinfo> impleme
         }
     }
 
+    @Override
+    public Result deletePetInfoById(Integer petId) {
+        if (petinfoDao.deleteById(petId) == 1){
+            return new Result(ResultEnum.SUCCESS);
+        }else {
+            return new Result(ResultEnum.ERROR);
+        }
+    }
+
 
 }

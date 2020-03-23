@@ -19,4 +19,6 @@ public interface PetinfoService extends IService<Petinfo> {
     Result selectById(String petId);
 
     Result doReUpload(Petinfo petinfo);
+
+    Result deletePetInfoById(Integer petId);
 }

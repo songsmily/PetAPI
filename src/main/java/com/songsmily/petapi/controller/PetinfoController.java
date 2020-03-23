@@ -68,6 +68,14 @@ public class PetinfoController extends ApiController {
         return petinfoService.doReUpload(petinfo);
     }
     /**
+     * 删除宠物信息
+     */
+    @RequiresPermissions("user-all")
+    @RequestMapping("deletePetInfoById")
+    public Result deletePetInfoById( Integer petId){
+        return petinfoService.deletePetInfoById(petId);
+    }
+    /**
      * 分页查询所有数据
      *
      * @param page 分页对象

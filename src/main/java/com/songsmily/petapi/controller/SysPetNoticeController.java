@@ -6,8 +6,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.songsmily.petapi.dto.Result;
 import com.songsmily.petapi.entity.SysPetNotice;
 import com.songsmily.petapi.service.SysPetNoticeService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -28,6 +30,35 @@ public class SysPetNoticeController extends ApiController {
      */
     @Resource
     private SysPetNoticeService sysPetNoticeService;
+
+
+    @RequiresPermissions("user-all")
+    @RequestMapping("/getMessage")
+    public Result getMessage(Integer topNumber){
+        return sysPetNoticeService.getMessage(topNumber);
+    }
+
+    @RequiresPermissions("user-all")
+    @RequestMapping("/haveRead")
+    public Result haveRead(Integer id){
+        return sysPetNoticeService.haveRead(id);
+    }
+    @RequiresPermissions("user-all")
+    @RequestMapping("/allHaveRead")
+    public Result allHaveRead(){
+        return sysPetNoticeService.allHaveRead();
+    }
+
+    @RequiresPermissions("user-all")
+    @RequestMapping("/deleteNotice")
+    public Result deleteNotice(Integer id){
+        return sysPetNoticeService.deleteNotice(id);
+    }
+    @RequiresPermissions("user-all")
+    @RequestMapping("/deleteAllNotice")
+    public Result deleteAllNotice(){
+        return sysPetNoticeService.deleteAllNotice();
+    }
 
     /**
      * 分页查询所有数据

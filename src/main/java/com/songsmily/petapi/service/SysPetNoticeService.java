@@ -1,6 +1,7 @@
 package com.songsmily.petapi.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.songsmily.petapi.dto.Result;
 import com.songsmily.petapi.entity.SysPetNotice;
 
 /**
@@ -11,4 +12,14 @@ import com.songsmily.petapi.entity.SysPetNotice;
  */
 public interface SysPetNoticeService extends IService<SysPetNotice> {
 
+    Result getMessage(Integer topNumber);
+
+    Result haveRead(Integer id);
+
+    Result deleteNotice(Integer id);
+
+
+    Result allHaveRead();
+
+    Result deleteAllNotice();
 }
