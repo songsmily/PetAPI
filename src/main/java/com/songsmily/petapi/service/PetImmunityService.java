@@ -13,4 +13,6 @@ import com.songsmily.petapi.entity.PetImmunity;
 public interface PetImmunityService extends IService<PetImmunity> {
 
     Result insertImmnuity(PetImmunity petImmunity);
+
+    Result updateImmunity(PetImmunity petImmunity);
 }

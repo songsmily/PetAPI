@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * (PetImmunity)表服务实现类
@@ -44,5 +46,35 @@ public class PetImmunityServiceImpl extends ServiceImpl<PetImmunityDao, PetImmun
         }catch (Exception e){
             return new Result(ResultEnum.ERROR);
         }
+    }
+
+    @Override
+    public Result updateImmunity(PetImmunity petImmunity) {
+        PetImmunity oldPetImmunity = petImmunityDao.selectById(petImmunity.getPetImmunityId());
+        if (!oldPetImmunity.getImmunityImageUrl().equals(petImmunity.getImmunityImageUrl())){
+            MultipartFile multipartFile = BASE64DecodedMultipartFile.base64ToMultipart(petImmunity.getImmunityImageUrl());
+            try {
+                String url = ossUtil.uploadImg2Oss(multipartFile);
+                if (url.equals("上传失败")){
+                    throw new Exception();
+                }
+                petImmunity.setImmunityImageUrl(url);
+
+                List<String> list = new ArrayList<>();
+                list.add(oldPetImmunity.getImmunityImageUrl().substring(oldPetImmunity.getImmunityImageUrl().lastIndexOf("/") + 1));
+                ossUtil.deleteFile20SS(list);
+            }catch (Exception e){
+                return new Result(ResultEnum.ERROR);
+
+            }
+        }
+        petImmunity.setFalseRes("-1");
+        petImmunity.setImmunityStatus(0);
+        petImmunity.setGmtModified(System.currentTimeMillis());
+        if (petImmunityDao.updateById(petImmunity) > 0){
+            return new Result(ResultEnum.SUCCESS);
+        }
+        return new Result(ResultEnum.ERROR);
+
     }
 }

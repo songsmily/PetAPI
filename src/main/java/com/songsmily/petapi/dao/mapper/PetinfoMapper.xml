@@ -4,10 +4,14 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.songsmily.petapi.dao.PetinfoDao">
+    <!--
+    查询未审核的宠物 信息  -》 用户端
+    -->
     <select id="returnUnCheckPetInfo" resultMap="petinfo" parameterType="java.util.Map">
         select pi.*  from petinfo pi
         <where>
             and pi.pet_status=0
+            and pi.is_cancel=0
             <if test="params.userIDs!=null">
                 and pi.hoste_id in
                 <foreach  item="item" collection="params.userIDs" index="index"  open="(" separator="," close=")">
@@ -17,6 +21,130 @@
         </where>
         limit ${params.begin} , ${params.end}
     </select>
+    <!--
+    宠物管理端-》宠物信息管理-》信息查询 查询 宠物以及宠物证书信息 可以根据UserIDs条件查询
+    -->
+    <select id="petManageSelectPetInfoStepOneReturnPetAndPetCardInfo"  resultMap="petManageSelectPetInfoStepOneReturnPetAndPetCardInfo" parameterType="java.util.Map">
+        select pI.*, pC.*
+        from petinfo pI
+        left join
+        (select * from pet_card where card_status!=2) as pC
+        on pI.pet_id=pC.pet_id
+        <where>
+        and pI.pet_status!=-1
+            <if test="params.petStatus!=-2">
+                <if test="params.petStatus!=-1">
+                    and  pI.pet_status=#{params.petStatus}
+                    and pI.is_cancel!=1
+                </if>
+                <if test="params.petStatus==-1">
+                    and pI.is_cancel=1
+                </if>
+            </if>
+            <if test="params.petCardStatus!=-2">
+                <if test="params.petCardStatus==-1">
+                    and 0>=pI.pet_card_count
+                </if>
+                <if test="params.petCardStatus!=-1">
+                    and pC.card_status=#{params.petCardStatus}
+                </if>
+            </if>
+            <if test="params.petImmunityStatus!=-2">
+                <if test="params.petImmunityStatus==-1">
+                    and 1>pC.immunity_count
+                </if>
+                 <if test="params.petImmunityStatus==1">
+                    and pC.immunity_count>=1
+                </if>
+
+            </if>
+            <if test="params.userIDs!=null">
+                and pI.hoste_id in
+                <foreach  item="item" collection="params.userIDs" index="index"  open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+        limit ${params.begin} , ${params.end}
+    </select>
+    <resultMap id="petManageSelectPetInfoStepOneReturnPetAndPetCardInfo" type="com.songsmily.petapi.entity.Petinfo">
+        <id property="petId" column="pet_id"/>
+        <result property="petNo" column="pet_no"/>
+        <result property="petTypeId" column="pet_type_id"/>
+        <result property="hosteId" column="hoste_id"/>
+        <result property="petName" column="pet_name"/>
+        <result property="petType" column="pet_type"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="gmtModified" column="gmt_modified"/>
+        <result property="petSex" column="pet_sex"/>
+        <result property="petHeight" column="pet_height"/>
+        <result property="petBirthday" column="pet_birthday"/>
+        <result property="petHairColor" column="pet_hair_color"/>
+        <result property="petRaiseAddr" column="pet_raise_addr"/>
+        <result property="petWeight" column="pet_weight"/>
+        <result property="petImageUrl" column="pet_image_url"/>
+        <result property="petDesc" column="pet_desc"/>
+        <result property="petStatus" column="pet_status"/>
+        <result property="isCancel" column="is_cancel"/>
+        <collection property="petCard" ofType="com.songsmily.petapi.entity.PetCard">
+            <id property="petCardId" column="pet_card_id"/>
+            <result property="cardNumber" column="card_number"/>
+            <result property="cardStatus" column="card_status"/>
+            <result property="cardImageUrl" column="card_image_url"/>
+            <result property="gmtCreated" column="gmt_created"/>
+            <result property="falseRes" column="false_res"/>
+        </collection>
+    </resultMap>
+    <!--
+    宠物管理端-》宠物信息管理-》信息查询 查询 宠物以及宠物证书信息 可以根据UserIDs条件查询  总记录条数
+    -->
+    <select id="petManageSelectPetInfoStepOneReturnPetAndPetCardInfoCount"  resultType="Integer" parameterType="java.util.Map">
+        select
+        count(*)
+        from
+        petinfo pI
+        left join
+        (select * from pet_card where card_status!=2) as pC
+        on pI.pet_id=pC.pet_id
+        <where>
+
+            and pI.pet_status!=-1
+
+            <if test="params.petStatus!=-2">
+                <if test="params.petStatus!=-1">
+                    and  pI.pet_status=#{params.petStatus}
+                    and pI.is_cancel!=1
+                </if>
+                <if test="params.petStatus==-1">
+                    and pI.is_cancel=1
+                </if>
+            </if>
+            <if test="params.petCardStatus!=-2">
+                <if test="params.petCardStatus==-1">
+                    and 1>pI.pet_card_count
+                </if>
+                <if test="params.petCardStatus!=-1">
+                    and pC.card_status=#{params.petCardStatus}
+                </if>
+            </if>
+            <if test="params.petImmunityStatus!=-2">
+                <if test="params.petImmunityStatus==-1">
+                    and 1>pC.immunity_count
+                </if>
+                <if test="params.petImmunityStatus==1">
+                    and pC.immunity_count>=1
+                </if>
+
+            </if>
+            <if test="params.userIDs!=null">
+                and pI.hoste_id in
+                <foreach  item="item" collection="params.userIDs" index="index"  open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
     <resultMap id="petinfo" type="com.songsmily.petapi.entity.Petinfo">
         <id property="petId" column="pet_id"/>
         <result property="petNo" column="pet_no"/>
@@ -36,16 +164,27 @@
         <result property="petDesc" column="pet_desc"/>
         <result property="petStatus" column="pet_status"/>
     </resultMap>
+    <!--
+        通过地区筛选查询出用户ID 根据用户ID 查询出 未审核的宠物及其免疫相关信息  -》管理员端
+    -->
     <select id="returnUnCheckCardPetInfoCountByUserIDs" resultType="Integer">
-        select count(*) from petinfo pi left join  pet_card pc on pc.pet_id=pi.pet_id where pc.card_status=0 and pi.hoste_id in
+        select count(*) from petinfo pi left join  pet_card pc on pc.pet_id=pi.pet_id where pc.card_status=0 and pi.is_cancel=0
+        and pi.hoste_id in
         <foreach  item="item" collection="userIDs" index="index"  open="(" separator="," close=")">
             #{item}
         </foreach>
     </select>
+
+
+    <!--
+
+        返回未审核宠物免疫证书信息 -》管理员端
+    -->
     <select id="returnUnCheckCardPetInfo" resultMap="petinfo_card" parameterType="java.util.Map">
         select pi.* ,pc.* from petinfo pi left join  pet_card pc on pc.pet_id=pi.pet_id
         <where>
-         and pc.card_status=0
+            and pc.card_status=0
+            and pi.is_cancel=0
             <if test="params.userIDs!=null">
                 and pi.hoste_id in
                 <foreach  item="item" collection="params.userIDs" index="index"  open="(" separator="," close=")">
@@ -53,7 +192,7 @@
                 </foreach>
             </if>
         </where>
-         limit ${params.begin} , ${params.end}
+        limit ${params.begin} , ${params.end}
     </select>
     <resultMap id="petinfo_card" type="com.songsmily.petapi.entity.Petinfo">
         <id property="petId" column="pet_id"/>
@@ -84,23 +223,117 @@
             <result property="falseRes" column="false_res"/>
         </collection>
     </resultMap>
-    <select id="returnPetCardImmunityInfos" resultMap="petinfo_card_immunity">
-       select
+
+    <select id="returnPetCardImmunityInfos" resultMap="petinfo_card_immunity1" parameterType="java.util.Map">
+        select
         pI.*,
         pC.*,
         pT.*
-    from
+        from
         petinfo pI
-    left join
+        left join
         pet_card pC
-		on pI.pet_id=pC.pet_id
-    left join
+        on pI.pet_id=pC.pet_id
+        inner join
         pet_immunity pT
-		on pC.pet_card_id=pT.pet_card_id
-    where
-        pI.hoste_id=#{petId}
+        on pC.pet_card_id=pT.pet_card_id
+        <where>
+            <!--            <if test="params.petStatus!=null">-->
+            <!--                and  pI.pet_status=#{params.petStatus}-->
+            <!--            </if>-->
+            and pI.is_cancel=0
+            <if test="params.userIDs!=null">
+                and pI.hoste_id in
+                <foreach  item="item" collection="params.userIDs" index="index"  open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+        limit ${params.begin} , ${params.end}
     </select>
-    <resultMap id="petinfo_card_immunity" type="com.songsmily.petapi.entity.Petinfo">
+    <select id="returnPetCardImmunityInfosByUserIDs" resultMap="petinfo_card_immunity" parameterType="java.util.Map">
+        select
+        pI.*,
+        pC.*,
+        pT.*
+        from
+        petinfo pI
+        left join
+        pet_card pC
+        on pI.pet_id=pC.pet_id
+        left join
+        pet_immunity pT
+        on pC.pet_card_id=pT.pet_card_id
+        <where>
+            and pI.is_cancel=0
+
+            <if test="params.unCheck==1">
+                and  pT.immunity_status=0
+            </if>
+            <if test="params.userIDs!=null">
+                and pI.hoste_id in
+                <foreach  item="item" collection="params.userIDs" index="index"  open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+        limit ${params.begin} , ${params.end}
+
+    </select>
+    <select id="returnPetCardImmunityInfosCountByUserIDs" resultType="Integer" parameterType="java.util.Map">
+        select
+        count(*)
+        from
+        petinfo pI
+        left join
+        pet_card pC
+        on pI.pet_id=pC.pet_id
+        inner join
+        pet_immunity pT
+        on pC.pet_card_id=pT.pet_card_id
+        <where>
+            and pI.is_cancel=0
+
+            <if test="params.unCheck==1">
+                and  pT.immunity_status=0
+            </if>
+            and  pI.hoste_id in
+            <foreach  item="item" collection="params.userIDs" index="index"  open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </where>
+
+    </select>
+
+
+    <resultMap id="petinfo_card_immunity" type="com.songsmily.petapi.entity.PetCardImmunityInfo">
+        <id property="petId" column="pet_id"/>
+        <result property="petNo" column="pet_no"/>
+        <result property="petTypeId" column="pet_type_id"/>
+        <result property="hosteId" column="hoste_id"/>
+        <result property="petName" column="pet_name"/>
+        <result property="petType" column="pet_type"/>
+        <result property="petSex" column="pet_sex"/>
+        <result property="petHeight" column="pet_height"/>
+        <result property="petBirthday" column="pet_birthday"/>
+        <result property="petHairColor" column="pet_hair_color"/>
+        <result property="petRaiseAddr" column="pet_raise_addr"/>
+        <result property="petWeight" column="pet_weight"/>
+        <result property="petImageUrl" column="pet_image_url"/>
+        <result property="petDesc" column="pet_desc"/>
+        <result property="petStatus" column="pet_status"/>
+        <result property="petId" column="pet_id"/>
+        <result property="cardNumber" column="card_number"/>
+        <result property="cardStatus" column="card_status"/>
+        <result property="petImmunityId" column="pet_immunity_id"/>
+        <result property="immunityTime" column="immunity_time"/>
+        <result property="immunityType" column="immunity_type"/>
+        <result property="immunityStatus" column="immunity_status"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="gmtModified" column="gmt_modified"/>
+        <result property="falseRes" column="false_res"/>
+    </resultMap>
+    <resultMap id="petinfo_card_immunity1" type="com.songsmily.petapi.entity.Petinfo">
         <id property="petId" column="pet_id"/>
         <result property="petNo" column="pet_no"/>
         <result property="petTypeId" column="pet_type_id"/>
@@ -118,22 +351,16 @@
         <result property="petImageUrl" column="pet_image_url"/>
         <result property="petDesc" column="pet_desc"/>
         <result property="petStatus" column="pet_status"/>
-        <collection property="petCards" ofType="com.songsmily.petapi.entity.PetCard">
-            <id property="id" column="pet_card_id"/>
-            <result property="petId" column="pet_id"/>
+        <collection property="petCard" ofType="com.songsmily.petapi.entity.PetCard">
+            <id property="petCardId" column="pet_card_id"/>
             <result property="cardNumber" column="card_number"/>
             <result property="cardStatus" column="card_status"/>
-            <result property="gmtCreated" column="gmt_created"/>
-            <result property="gmtModified" column="gmt_modified"/>
             <collection property="petImmunities" ofType="com.songsmily.petapi.entity.PetImmunity">
-                <id property="id" column="pet_immunity_id"/>
-                <result property="petId" column="pet_id"/>
-                <result property="petCardId" column="pet_card_id"/>
+                <id property="petImmunityId" column="pet_immunity_id"/>
                 <result property="immunityTime" column="immunity_time"/>
                 <result property="immunityType" column="immunity_type"/>
                 <result property="immunityStatus" column="immunity_status"/>
-                <result property="gmtCreate" column="gmt_create"/>
-                <result property="gmtModified" column="gmt_modified"/>
+                <result property="falseRes" column="false_res"/>
             </collection>
 
         </collection>

@@ -38,8 +38,28 @@ public class PetCard extends Model<PetCard> {
     private Long gmtCreated;
     //修改时间
     private Long gmtModified;
+    //免疫信息总数
+    private Integer immunityCount;
     //审核失败原因
     private String falseRes;
+    //宠物是否注销 0 未注销 1 已注销
+    private Integer isCancel;
+
+    public Integer getIsCancel() {
+        return isCancel;
+    }
+
+    public void setIsCancel(Integer isCancel) {
+        this.isCancel = isCancel;
+    }
+
+    public Integer getImmunityCount() {
+        return immunityCount;
+    }
+
+    public void setImmunityCount(Integer immunityCount) {
+        this.immunityCount = immunityCount;
+    }
 
     public String getFalseRes() {
         return falseRes;

@@ -24,10 +24,12 @@ public class SysPetNotice extends Model<SysPetNotice> {
     private Integer petCardId;
     //宠物免疫信息ID
     private Integer petImmunityId;
-    //通知类型：1、审核通过通知 2、审核失败通知 3、免疫证书审核通过通知 4、免疫证书审核失败通知
+    //通知类型：1、审核通过通知 2、审核失败通知 3、免疫证书审核通过通知 4、免疫证书审核失败通知 5、免疫信息审核通过通知 6、免疫信息审核失败通知
     private Integer type;
     
     private Long gmtCreate;
+
+    private  String noticeDesc;
     //通知状态 0、未读状态 1、已读状态 -1、删除状态
     private Integer noticeStatus;
 
@@ -41,8 +43,17 @@ public class SysPetNotice extends Model<SysPetNotice> {
                 ", petImmunityId=" + petImmunityId +
                 ", type=" + type +
                 ", gmtCreate=" + gmtCreate +
+                ", noticeDesc='" + noticeDesc + '\'' +
                 ", noticeStatus=" + noticeStatus +
                 '}';
+    }
+
+    public String getNoticeDesc() {
+        return noticeDesc;
+    }
+
+    public void setNoticeDesc(String noticeDesc) {
+        this.noticeDesc = noticeDesc;
     }
 
     public Integer getPetCardId() {

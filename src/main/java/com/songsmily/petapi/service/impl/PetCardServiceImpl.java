@@ -46,6 +46,7 @@ public class PetCardServiceImpl extends ServiceImpl<PetCardDao, PetCard> impleme
         User user = ShiroUtil.getUser(new User());
         QueryWrapper wrapper = new QueryWrapper();
         wrapper.eq("hoste_id", user.getId());
+        wrapper.eq("is_cancel", 0);
         List<Petinfo> res = petinfoDao.selectList(wrapper);
         List<Petinfo> newRes = new ArrayList<>();
         if (null != res) {
@@ -77,6 +78,7 @@ public class PetCardServiceImpl extends ServiceImpl<PetCardDao, PetCard> impleme
             petCard.setCardStatus(0);
             petCard.setGmtCreated(System.currentTimeMillis());
             petCard.setGmtModified(petCard.getGmtCreated());
+            petCard.setImmunityCount(0);
             if (petCardDao.insert(petCard) == 1) {
                 return new Result(ResultEnum.SUCCESS);
             }

@@ -32,6 +32,42 @@ public class PetImmunity extends Model<PetImmunity> {
     private Long gmtCreate;
     //修改时间
     private Long gmtModified;
+    //失败原因
+    private String  falseRes;
+    //宠物是否注销 0 未注销 1 已注销
+    private Integer isCancel;
+
+    public Integer getIsCancel() {
+        return isCancel;
+    }
+
+    public void setIsCancel(Integer isCancel) {
+        this.isCancel = isCancel;
+    }
+
+    @Override
+    public String toString() {
+        return "PetImmunity{" +
+                "petImmunityId=" + petImmunityId +
+                ", petId=" + petId +
+                ", petCardId=" + petCardId +
+                ", immunityTime=" + immunityTime +
+                ", immunityType='" + immunityType + '\'' +
+                ", immunityImageUrl='" + immunityImageUrl + '\'' +
+                ", immunityStatus=" + immunityStatus +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", falseRes='" + falseRes + '\'' +
+                '}';
+    }
+
+    public String getFalseRes() {
+        return falseRes;
+    }
+
+    public void setFalseRes(String falseRes) {
+        this.falseRes = falseRes;
+    }
 
     public String getImmunityImageUrl() {
         return immunityImageUrl;

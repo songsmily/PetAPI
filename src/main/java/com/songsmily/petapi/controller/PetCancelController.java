@@ -7,8 +7,8 @@ import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.songsmily.petapi.dto.Result;
-import com.songsmily.petapi.entity.PetImmunity;
-import com.songsmily.petapi.service.PetImmunityService;
+import com.songsmily.petapi.entity.PetCancel;
+import com.songsmily.petapi.service.PetCancelService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,30 +17,29 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * (PetImmunity)表控制层
+ * (PetCancel)表控制层
  *
  * @author SongSmily
- * @since 2020-03-20 09:00:20
+ * @since 2020-04-02 04:41:38
  */
 @RestController
-@RequestMapping("petImmunity")
-public class PetImmunityController  {
+@RequestMapping("petCancel")
+public class PetCancelController {
     /**
      * 服务对象
      */
     @Resource
-    private PetImmunityService petImmunityService;
+    private PetCancelService petCancelService;
 
+    /**
+     * 上传宠物注销信息
+     * @param petCancel 宠物注销信息实体对象
+     * @return Result 封装实体
+     */
     @RequiresPermissions("user-all")
-    @RequestMapping("insertImmunity")
-    public Result insertImmnuity(@RequestBody PetImmunity petImmunity){
-        return petImmunityService.insertImmnuity(petImmunity);
-    }
-
-    @RequiresPermissions("user-all")
-    @RequestMapping("updateImmunity")
-    public Result updateImmunity(@RequestBody PetImmunity petImmunity){
-        return petImmunityService.updateImmunity(petImmunity);
+    @RequestMapping("doCancel")
+    public Result doCancel(@RequestBody PetCancel petCancel) {
+        return petCancelService.doCancel(petCancel);
     }
 
 }

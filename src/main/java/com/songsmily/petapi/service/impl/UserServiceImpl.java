@@ -38,10 +38,17 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     UserDao userDao;
     @Resource
     OssUtil ossUtil;
+
+    /**
+     * 返回已登录用户信息
+     * @return
+     */
     @Override
     public Result returnUserInfo() {
+        //调用ShiroUtil返回已登录用户信息
         User user  = (User) ShiroUtil.getUser(new User());
-        System.err.println("----" + user);
+
+        //封装user信息
         Map<String,Object> data = new HashMap<>();
         data.put("accountId",user.getAccountId());
         data.put("accountType",user.getAccountType());
@@ -54,7 +61,8 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         data.put("address",user.getAddr());
         data.put("email",user.getEmail());
         data.put("phone",user.getPhone());
-        System.err.println( "returnUserInfo ====" + data);
+
+        //返回Result对象 封装data
         return new Result(data);
     }
 
@@ -90,12 +98,22 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         }
     }
 
+    /**
+     * 检测是否存在相同的用户名
+     * @param name 用户名
+     * @return
+     */
     @Override
     public Boolean isRepeatNickName(String name) {
+        //调用ShiroUtil获取到已登录的user对象
         User user = ShiroUtil.getUser(new User());
         QueryWrapper<User> wrapper = new QueryWrapper();
+
+        //配置查询条件
         wrapper.eq("name",name);
         wrapper.ne("id",user.getId());
+
+        //查询数据库 判断是否为空并返回
         return userDao.selectOne(wrapper) == null;
     }
 
@@ -126,17 +144,26 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 
     }
 
+    /**
+     * 重置用户密码
+     * @param password 密码
+     * @return
+     */
     @Override
     public Result resetPassword(String password) {
+        //获取已登录用户对象
         User oldUser =  ShiroUtil.getUser(new User());
+
+        //封装用户对象 替换数据库中密码信息
         User user = new User();
         user.setPassword(CommonUtils.setPassword(password));
         user.setId(oldUser.getId());
+
+        //替换用户数据
         if (userDao.updateById(user) == 1){
             oldUser.setPassword(user.getPassword());
             ShiroUtil.setUser(oldUser);
             return new Result(ResultEnum.SUCCESS);
-
         }else{
             return new Result(ResultEnum.ERROR);
 

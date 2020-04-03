@@ -3,6 +3,8 @@ package com.songsmily.petapi.controller;
 import com.songsmily.petapi.dto.CodeMsg;
 import com.songsmily.petapi.dto.Result;
 import com.songsmily.petapi.entity.PetCard;
+import com.songsmily.petapi.entity.PetImmunity;
+import com.songsmily.petapi.entity.SysPetNotice;
 import com.songsmily.petapi.service.PetCheckService;
 import com.songsmily.petapi.service.PetinfoService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -21,6 +23,38 @@ public class AdminPetCheckController {
     @Resource
     private PetCheckService petCheckService;
 
+    /**
+     * 返回未审核免疫信息 包含宠物信息 免疫证书  免疫信息
+     * @return
+     */
+    @RequiresPermissions("pet-admin")
+    @RequestMapping("/returnUnCheckCardImmunityPetInfo")
+    public Result returnUnCheckCardImmunityPetInfo(Integer currentPage,Integer pageSize,String areaFilter){
+
+        return petCheckService.returnUnCheckCardImmunityPetInfo(currentPage,pageSize,areaFilter);
+    }
+
+    /**
+     * 宠物免疫信息审核通过
+     * @param petImmunity
+     * @return
+     */
+    @RequiresPermissions("pet-admin")
+    @RequestMapping("/checkImmunityPass")
+    public Result  checkImmunityPass(@RequestBody PetImmunity petImmunity){
+        return petCheckService.doCheckImmunity(petImmunity,true);
+    }
+
+    /**
+     * 宠物免疫信息审核失败
+     * @param petImmunity
+     * @return
+     */
+    @RequiresPermissions("pet-admin")
+    @RequestMapping("/checkImmunityFalse")
+    public Result  checkImmunityFalse(@RequestBody PetImmunity petImmunity){
+        return petCheckService.doCheckImmunity(petImmunity,false);
+    }
     /**
      * 宠物免疫证书审核，返回待审核宠物免疫证书信息
      * @return

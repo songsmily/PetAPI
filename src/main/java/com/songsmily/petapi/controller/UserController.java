@@ -38,32 +38,44 @@ import java.util.Map;
 @RequestMapping("user")
 public class UserController extends ApiController {
     /**
-     * 服务对象
+     * 用户服务对象
      */
     @Autowired
     private UserService userService;
 
+    /**
+     * 检测是否存在相同的用户名
+     * @param name 用户填写的用户名
+     * @return 返回 Result封装对象
+     */
     @RequestMapping("/isRepeatName")
     @RequiresPermissions("user-all")
     public Result isRepeatNickName(String name){
+        //调用Service
         Boolean isrepeat =  userService.isRepeatNickName(name);
         return new Result(isrepeat);
     }
 
     /**
      * 返回登录用户信息
-     * @return
+     * @return 返回User信息
      */
     @RequiresPermissions(value = "user-all")
     @GetMapping("/returnUserInfo")
     public Result returnUserInfo(){
+        //调用service
         return userService.returnUserInfo();
     }
 
-
+    /**
+     * 重置用户密码
+     * @param password 用户重置的密码
+     * @return 返回是否成功 修改
+     */
     @RequiresPermissions("user-all")
     @RequestMapping("/resetPassword")
     public Result resetPassword(String password){
+        //调用service
         return userService.resetPassword(password);
     }
 

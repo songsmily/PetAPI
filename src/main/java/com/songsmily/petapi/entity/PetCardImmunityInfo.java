@@ -1,22 +1,7 @@
 package com.songsmily.petapi.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
-import java.io.Serializable;
-import java.util.List;
-
-/**
- * 宠物信息表(Petinfo)表实体类
- *
- * @author SongSmily
- * @since 2019-12-20 17:39:00
- */
-@SuppressWarnings("serial")
-public class Petinfo extends Model<Petinfo> {
+public class PetCardImmunityInfo {
     //宠物ID
-    @TableId(value = "pet_id", type = IdType.AUTO)
     private Integer petId;
     //宠物编号
     private String petNo;
@@ -28,10 +13,6 @@ public class Petinfo extends Model<Petinfo> {
     private String petName;
     //宠物类型
     private String petType;
-    //注册日期
-    private Long gmtCreate;
-    //修改日期
-    private Long gmtModified;
     //宠物性别
     private String petSex;
     //宠物身高
@@ -48,53 +29,43 @@ public class Petinfo extends Model<Petinfo> {
     private String petImageUrl;
     //宠物描述
     private String petDesc;
-    //宠物证书总数
-    private Integer petCardCount;
-    //宠物状态 0:待审核 1：审核通过 -1：审核失败 -2: 已注销
+    //宠物状态
     private Integer petStatus;
-    //宠物是否注销 0 未注销 1 已注销
-    private Integer isCancel;
-
-    public Integer getIsCancel() {
-        return isCancel;
-    }
-
-    public void setIsCancel(Integer isCancel) {
-        this.isCancel = isCancel;
-    }
-
-    //宠物免疫证书 以及免疫信息
-    @TableField(exist = false)
-    private PetCard petCard;
-
-    public Integer getPetCardCount() {
-        return petCardCount;
-    }
-
-    public void setPetCardCount(Integer petCardCount) {
-        this.petCardCount = petCardCount;
-    }
-
-    public void setPetCard(PetCard petCard) {
-        this.petCard = petCard;
-    }
+    //主键 证书ID
+    private Integer petCardId;
 
 
-    public PetCard getPetCard() {
-        return petCard;
-    }
+    //免疫证书编号
+    private String cardNumber;
+
+    private String cardImageUrl;
+    //证书状态：0、待审核 1、审核通过  2、审核失败  -1、证书失效
+    private Integer cardStatus;
+    //审核失败原因
+    private String falseRes;
+    private Integer petImmunityId;
+    //免疫时间
+    private Long immunityTime;
+    //免疫类型
+    private String immunityType;
+    //免疫图片URL
+    private String immunityImageUrl;
+    //免疫信息状态 0、待审核 1、审核通过 2、审核失败
+    private Integer immunityStatus;
+    //创建时间
+    private Long gmtCreate;
+    //修改时间
+    private Long gmtModified;
 
     @Override
     public String toString() {
-        return "Petinfo{" +
+        return "PetCardImmunityInfo{" +
                 "petId=" + petId +
                 ", petNo='" + petNo + '\'' +
                 ", petTypeId=" + petTypeId +
                 ", hosteId=" + hosteId +
                 ", petName='" + petName + '\'' +
                 ", petType='" + petType + '\'' +
-                ", gmtCreate=" + gmtCreate +
-                ", gmtModified=" + gmtModified +
                 ", petSex='" + petSex + '\'' +
                 ", petHeight=" + petHeight +
                 ", petBirthday='" + petBirthday + '\'' +
@@ -104,7 +75,18 @@ public class Petinfo extends Model<Petinfo> {
                 ", petImageUrl='" + petImageUrl + '\'' +
                 ", petDesc='" + petDesc + '\'' +
                 ", petStatus=" + petStatus +
-                ", petCard=" + petCard +
+                ", petCardId=" + petCardId +
+                ", cardNumber='" + cardNumber + '\'' +
+                ", cardImageUrl='" + cardImageUrl + '\'' +
+                ", cardStatus=" + cardStatus +
+                ", falseRes='" + falseRes + '\'' +
+                ", petImmunityId=" + petImmunityId +
+                ", immunityTime=" + immunityTime +
+                ", immunityType='" + immunityType + '\'' +
+                ", immunityImageUrl='" + immunityImageUrl + '\'' +
+                ", immunityStatus=" + immunityStatus +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
                 '}';
     }
 
@@ -154,22 +136,6 @@ public class Petinfo extends Model<Petinfo> {
 
     public void setPetType(String petType) {
         this.petType = petType;
-    }
-
-    public Long getGmtCreate() {
-        return gmtCreate;
-    }
-
-    public void setGmtCreate(Long gmtCreate) {
-        this.gmtCreate = gmtCreate;
-    }
-
-    public Long getGmtModified() {
-        return gmtModified;
-    }
-
-    public void setGmtModified(Long gmtModified) {
-        this.gmtModified = gmtModified;
     }
 
     public String getPetSex() {
@@ -244,13 +210,99 @@ public class Petinfo extends Model<Petinfo> {
         this.petStatus = petStatus;
     }
 
-    /**
-     * 获取主键值
-     *
-     * @return 主键值
-     */
-    @Override
-    protected Serializable pkVal() {
-        return this.petId;
+    public Integer getPetCardId() {
+        return petCardId;
     }
+
+    public void setPetCardId(Integer petCardId) {
+        this.petCardId = petCardId;
     }
+
+    public String getCardNumber() {
+        return cardNumber;
+    }
+
+    public void setCardNumber(String cardNumber) {
+        this.cardNumber = cardNumber;
+    }
+
+    public String getCardImageUrl() {
+        return cardImageUrl;
+    }
+
+    public void setCardImageUrl(String cardImageUrl) {
+        this.cardImageUrl = cardImageUrl;
+    }
+
+    public Integer getCardStatus() {
+        return cardStatus;
+    }
+
+    public void setCardStatus(Integer cardStatus) {
+        this.cardStatus = cardStatus;
+    }
+
+    public String getFalseRes() {
+        return falseRes;
+    }
+
+    public void setFalseRes(String falseRes) {
+        this.falseRes = falseRes;
+    }
+
+    public Integer getPetImmunityId() {
+        return petImmunityId;
+    }
+
+    public void setPetImmunityId(Integer petImmunityId) {
+        this.petImmunityId = petImmunityId;
+    }
+
+    public Long getImmunityTime() {
+        return immunityTime;
+    }
+
+    public void setImmunityTime(Long immunityTime) {
+        this.immunityTime = immunityTime;
+    }
+
+    public String getImmunityType() {
+        return immunityType;
+    }
+
+    public void setImmunityType(String immunityType) {
+        this.immunityType = immunityType;
+    }
+
+    public String getImmunityImageUrl() {
+        return immunityImageUrl;
+    }
+
+    public void setImmunityImageUrl(String immunityImageUrl) {
+        this.immunityImageUrl = immunityImageUrl;
+    }
+
+    public Integer getImmunityStatus() {
+        return immunityStatus;
+    }
+
+    public void setImmunityStatus(Integer immunityStatus) {
+        this.immunityStatus = immunityStatus;
+    }
+
+    public Long getGmtCreate() {
+        return gmtCreate;
+    }
+
+    public void setGmtCreate(Long gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
+
+    public Long getGmtModified() {
+        return gmtModified;
+    }
+
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
+    }
+}

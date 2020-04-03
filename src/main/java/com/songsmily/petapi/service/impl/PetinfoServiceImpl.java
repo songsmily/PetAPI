@@ -4,15 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.songsmily.petapi.dao.PetCheckfalseDao;
-import com.songsmily.petapi.dao.PetinfoDao;
-import com.songsmily.petapi.dao.PettypeDao;
+import com.songsmily.petapi.dao.*;
 import com.songsmily.petapi.dto.CodeMsg;
 import com.songsmily.petapi.dto.Result;
-import com.songsmily.petapi.entity.PetCheckfalse;
-import com.songsmily.petapi.entity.Petinfo;
-import com.songsmily.petapi.entity.Pettype;
-import com.songsmily.petapi.entity.User;
+import com.songsmily.petapi.entity.*;
 import com.songsmily.petapi.enums.ResultEnum;
 import com.songsmily.petapi.service.PetinfoService;
 import com.songsmily.petapi.utils.BASE64DecodedMultipartFile;
@@ -20,6 +15,7 @@ import com.songsmily.petapi.utils.Image2Base64;
 import com.songsmily.petapi.utils.OssUtil;
 import com.songsmily.petapi.utils.ShiroUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -43,6 +39,10 @@ public class PetinfoServiceImpl extends ServiceImpl<PetinfoDao, Petinfo> impleme
     PettypeDao pettypeDao;
     @Resource
     PetCheckfalseDao petCheckfalseDao;
+    @Resource
+    PetCardDao petCardDao;
+    @Resource
+    PetImmunityDao petImmunityDao;
 
     /**
      * 上传宠物信息
@@ -130,8 +130,15 @@ public class PetinfoServiceImpl extends ServiceImpl<PetinfoDao, Petinfo> impleme
     }
 
     @Override
+    @Transactional
     public Result deletePetInfoById(Integer petId) {
+
         if (petinfoDao.deleteById(petId) == 1){
+            QueryWrapper wrapper = new QueryWrapper();
+            wrapper.eq("pet_id",petId);
+
+            petCardDao.delete(wrapper);
+            petImmunityDao.delete(wrapper);
             return new Result(ResultEnum.SUCCESS);
         }else {
             return new Result(ResultEnum.ERROR);

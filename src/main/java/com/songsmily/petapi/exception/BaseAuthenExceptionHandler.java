@@ -21,6 +21,6 @@ public class BaseAuthenExceptionHandler {
     @RequestMapping("/UnLoginError")
     @ResponseBody
     public Result unLoginError(){
-        return new Result(ResultEnum.NOT_LOGIN);
+        throw new BaseException(ResultEnum.NOT_LOGIN);
     }
 }

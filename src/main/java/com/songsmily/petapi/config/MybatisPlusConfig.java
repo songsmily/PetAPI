@@ -3,6 +3,7 @@ package com.songsmily.petapi.config;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.PerformanceInterceptor;
 import com.github.pagehelper.PageHelper;
+import org.mockito.internal.configuration.GlobalConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -19,7 +20,6 @@ public class MybatisPlusConfig {
         page.setDialectType("mysql");
         return page;
     }
-
 
     @Bean
     public PerformanceInterceptor performanceInterceptor() {
