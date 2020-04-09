@@ -4,10 +4,12 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.util.unit.DataSize;
 
 @SpringBootApplication
 @MapperScan("com.songsmily.petapi.dao")
+@EnableTransactionManagement(proxyTargetClass = true)
 public class PetApiApplication {
 
     public static void main(String[] args) {

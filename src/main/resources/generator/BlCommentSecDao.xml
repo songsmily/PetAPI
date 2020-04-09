@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.songsmily.petapi.genertor.BlCommentSecDao">
+  <resultMap id="BaseResultMap" type="com.songsmily.petapi.genertor.BlCommentSec">
+    <id column="sec_id" jdbcType="VARCHAR" property="secId" />
+    <result column="sec_content" jdbcType="VARCHAR" property="secContent" />
+    <result column="sec_user" jdbcType="INTEGER" property="secUser" />
+    <result column="sec_parent" jdbcType="VARCHAR" property="secParent" />
+    <result column="sec_good" jdbcType="INTEGER" property="secGood" />
+    <result column="created_time" jdbcType="BIGINT" property="createdTime" />
+    <result column="deleted" jdbcType="INTEGER" property="deleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    sec_id, sec_content, sec_user, sec_parent, sec_good, created_time, deleted
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bl_comment_sec
+    where sec_id = #{secId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from bl_comment_sec
+    where sec_id = #{secId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" keyColumn="sec_id" keyProperty="secId" parameterType="com.songsmily.petapi.genertor.BlCommentSec" useGeneratedKeys="true">
+    insert into bl_comment_sec (sec_content, sec_user, sec_parent, 
+      sec_good, created_time, deleted
+      )
+    values (#{secContent,jdbcType=VARCHAR}, #{secUser,jdbcType=INTEGER}, #{secParent,jdbcType=VARCHAR}, 
+      #{secGood,jdbcType=INTEGER}, #{createdTime,jdbcType=BIGINT}, #{deleted,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="sec_id" keyProperty="secId" parameterType="com.songsmily.petapi.genertor.BlCommentSec" useGeneratedKeys="true">
+    insert into bl_comment_sec
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="secContent != null">
+        sec_content,
+      </if>
+      <if test="secUser != null">
+        sec_user,
+      </if>
+      <if test="secParent != null">
+        sec_parent,
+      </if>
+      <if test="secGood != null">
+        sec_good,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="deleted != null">
+        deleted,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="secContent != null">
+        #{secContent,jdbcType=VARCHAR},
+      </if>
+      <if test="secUser != null">
+        #{secUser,jdbcType=INTEGER},
+      </if>
+      <if test="secParent != null">
+        #{secParent,jdbcType=VARCHAR},
+      </if>
+      <if test="secGood != null">
+        #{secGood,jdbcType=INTEGER},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=BIGINT},
+      </if>
+      <if test="deleted != null">
+        #{deleted,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.songsmily.petapi.genertor.BlCommentSec">
+    update bl_comment_sec
+    <set>
+      <if test="secContent != null">
+        sec_content = #{secContent,jdbcType=VARCHAR},
+      </if>
+      <if test="secUser != null">
+        sec_user = #{secUser,jdbcType=INTEGER},
+      </if>
+      <if test="secParent != null">
+        sec_parent = #{secParent,jdbcType=VARCHAR},
+      </if>
+      <if test="secGood != null">
+        sec_good = #{secGood,jdbcType=INTEGER},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=BIGINT},
+      </if>
+      <if test="deleted != null">
+        deleted = #{deleted,jdbcType=INTEGER},
+      </if>
+    </set>
+    where sec_id = #{secId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.songsmily.petapi.genertor.BlCommentSec">
+    update bl_comment_sec
+    set sec_content = #{secContent,jdbcType=VARCHAR},
+      sec_user = #{secUser,jdbcType=INTEGER},
+      sec_parent = #{secParent,jdbcType=VARCHAR},
+      sec_good = #{secGood,jdbcType=INTEGER},
+      created_time = #{createdTime,jdbcType=BIGINT},
+      deleted = #{deleted,jdbcType=INTEGER}
+    where sec_id = #{secId,jdbcType=VARCHAR}
+  </update>
+</mapper>

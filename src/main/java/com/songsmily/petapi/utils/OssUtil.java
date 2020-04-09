@@ -6,6 +6,8 @@ import com.aliyun.oss.model.DeleteObjectsRequest;
 import com.aliyun.oss.model.DeleteObjectsResult;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.PutObjectResult;
+import com.songsmily.petapi.enums.ResultEnum;
+import com.songsmily.petapi.exception.BaseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -55,7 +57,7 @@ public class OssUtil {
      */
     public String uploadImg2Oss(MultipartFile file) {
         if (file.getSize() > 1024 * 1024 *20) {
-            return "图片太大";//RestResultGenerator.createErrorResult(ResponseEnum.PHOTO_TOO_MAX);
+            throw new BaseException(ResultEnum.PARAMS_ERROR);
         }
         String originalFilename = file.getOriginalFilename();
         String substring = originalFilename.substring(originalFilename.lastIndexOf("/") + 1).toLowerCase();
@@ -66,18 +68,21 @@ public class OssUtil {
             this.uploadFile2OSS(inputStream, name);
             return url + name;//RestResultGenerator.createSuccessResult(name);
         } catch (Exception e) {
-            e.printStackTrace();
-            return "上传失败";//RestResultGenerator.createErrorResult(ResponseEnum.PHOTO_UPLOAD);
+            throw new BaseException(ResultEnum.ERROR);
         }
     }
     /*
     删除图片
      */
     public String deleteFile20SS(List<String> filename){
-        OSSClient ossClient = new OSSClient(endpoint, accessKeyId, accessKeySecret);
-        DeleteObjectsRequest deleteObjectsRequest = new DeleteObjectsRequest(bucketName).withKeys(filename);
-        DeleteObjectsResult deleteObjectsResult = ossClient.deleteObjects(deleteObjectsRequest);
-        ossClient.shutdown();
+        try {
+            OSSClient ossClient = new OSSClient(endpoint, accessKeyId, accessKeySecret);
+            DeleteObjectsRequest deleteObjectsRequest = new DeleteObjectsRequest(bucketName).withKeys(filename);
+            DeleteObjectsResult deleteObjectsResult = ossClient.deleteObjects(deleteObjectsRequest);
+            ossClient.shutdown();
+        }catch (Exception e){
+            throw new BaseException(ResultEnum.ERROR);
+        }
         return null;
     }
 

@@ -7,6 +7,7 @@
     <!--
     查询未审核的宠物 信息  -》 用户端
     -->
+
     <select id="returnUnCheckPetInfo" resultMap="petinfo" parameterType="java.util.Map">
         select pi.*  from petinfo pi
         <where>

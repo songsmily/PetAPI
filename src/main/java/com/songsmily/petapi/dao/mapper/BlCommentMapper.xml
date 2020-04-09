@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.songsmily.petapi.dao.BlCommentDao" >
+    <select id="selectCommentAndSecondComment" resultMap="comment_and_comment_second">
+        select bl_comment.*,
+        bl_comment_sec.sec_user,bl_comment_sec.sec_content,bl_comment_sec.created_time as sec_created_time,bl_comment_sec.sec_good,bl_comment_sec.sec_id,bl_comment_sec.sec_parent,bl_comment_sec.deleted as sec_deleted,
+        user.name as comment_user_name,user.avatar_url as comment_user_avatar_url,
+        sec_user.name as sec_comment_user_name,sec_user.avatar_url as sec_comment_user_avatar_url
+        from bl_comment
+        left join user on bl_comment.comment_user=user.id
+        left join bl_comment_sec on bl_comment.comment_id=bl_comment_sec.sec_parent
+        left join user  sec_user on bl_comment_sec.sec_user=sec_user.id
+
+        <where>
+            and bl_comment.comment_blog=#{blogId}
+        </where>
+        order by bl_comment.created_time desc
+    </select>
+    <resultMap id="comment_and_comment_second" type="com.songsmily.petapi.entity.BlComment">
+        <id column="comment_id" jdbcType="VARCHAR" property="commentId" />
+        <result column="comment_content" jdbcType="VARCHAR" property="commentContent" />
+        <result column="comment_user" jdbcType="INTEGER" property="commentUser" />
+        <result column="comment_blog" jdbcType="VARCHAR" property="commentBlog" />
+        <result column="comment_good" jdbcType="INTEGER" property="commentGood" />
+        <result column="created_time" jdbcType="BIGINT" property="createdTime" />
+        <result column="deleted" jdbcType="INTEGER" property="deleted" />
+        <result column="comment_second" jdbcType="INTEGER" property="commentSecond" />
+        <result column="comment_user_name" jdbcType="VARCHAR" property="commentUserName" />
+        <result column="comment_user_avatar_url" jdbcType="INTEGER" property="commentUserAvatarUrl" />
+        <collection property="commentSecList" ofType="com.songsmily.petapi.entity.BlCommentSec">
+            <id column="sec_id" jdbcType="VARCHAR" property="secId" />
+            <result column="sec_content" jdbcType="VARCHAR" property="secContent" />
+            <result column="sec_user" jdbcType="INTEGER" property="secUser" />
+            <result column="sec_parent" jdbcType="VARCHAR" property="secParent" />
+            <result column="sec_good" jdbcType="INTEGER" property="secGood" />
+            <result column="sec_created_time" jdbcType="BIGINT" property="createdTime" />
+            <result column="sec_comment_user_name" jdbcType="BIGINT" property="secCommentUserName" />
+            <result column="sec_comment_user_avatar_url" jdbcType="BIGINT" property="secCommentUserAvatarUrl" />
+            <result column="sec_deleted" jdbcType="INTEGER" property="deleted" />
+        </collection>
+    </resultMap>
+</mapper>

@@ -8,11 +8,14 @@ import com.songsmily.petapi.dao.PettypeDao;
 import com.songsmily.petapi.dao.PlotDao;
 import com.songsmily.petapi.entity.Pettype;
 import com.songsmily.petapi.service.impl.MailServiceImpl;
+import com.songsmily.petapi.utils.IdWorker;
 import com.songsmily.petapi.utils.OssUtil;
+import com.songsmily.petapi.utils.RedisUtils;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -20,6 +23,8 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @SpringBootTest
@@ -35,6 +40,28 @@ class PetApiApplicationTests {
     OssUtil ossUtils;
     @Resource
     PettypeDao pettypeDao;
+    @Resource
+    RedisUtils redisUtils;
+    @Resource
+    IdWorker idWorker;
+    @Resource
+    RedisTemplate redisTemplate;
+    @Test
+    public void redis1() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("username", "聂启松");
+        map.put("gender", "男");
+        for (int j = 0; j < 2; j++) {
+            long userId = idWorker.nextId();
+            map.put("userid:", userId);
+            for (int i = 5; i < 16; i++) {
+                long id = idWorker.nextId();
+                String score = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+                redisTemplate.opsForZSet().add("user:ids", id, Double.parseDouble(score));
+                redisUtils.hmset("user:" + id, map);
+            }
+        }
+    }
 
     @Test
     public void testPet(){

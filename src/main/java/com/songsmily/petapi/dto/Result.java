@@ -32,8 +32,9 @@ public class Result<T> implements Serializable {
         return data;
     }
 
-    public void setData(T data) {
+    public Result setData(T data) {
         this.data = data;
+        return null;
     }
 
     public Result() {

@@ -1,31 +1,60 @@
 package com.songsmily.petapi;
 
-import java.util.Arrays;
-import java.util.Scanner;
+import com.songsmily.petapi.utils.IdWorker;
+import com.songsmily.petapi.utils.RedisUtils;
+import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.annotation.Resource;
+import java.time.LocalDateTime;
+import java.util.*;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class TestClass {
-    public static void main(String[] args) {
-        int[] arr = {5,7,4,1,3,4,5,0};
-//        System.out.println(findMinIndex(arr));
 
-//        System.out.println(findLastPosition(arr,10));
+    @Test
+    public  void test1(){
+        System.out.println(UUID.randomUUID().toString());
+        System.out.println(UUID.randomUUID().toString());
+        System.out.println(UUID.randomUUID().toString());
+        System.out.println(UUID.randomUUID().toString());
+        System.out.println(UUID.randomUUID().toString());
+        System.out.println(UUID.randomUUID().toString());
+        System.out.println(UUID.randomUUID().toString());
+        System.out.println(UUID.randomUUID().toString());
+    }
+    private static void test(int[] arr) {
+        for (int i = 0; i < arr.length; i++) {
+            try {
+                if (arr[i] % 2 == 0) {
+                    throw new NullPointerException();
+                } else {
+                    System.out.print(i);
+                }
+            } finally {
+                System.out.print("e");
+            }
+        }
+    }
 
-//        int[] positionArr = new int[arr.length];
-//        System.out.println(findAllPosition(arr,positionArr,5));
-//        System.out.println(Arrays.toString(positionArr));
-
-//        System.out.println(Arrays.toString(arr));
-//        System.out.println(insertIntoArray(arr,5,100));
-//        System.out.println(Arrays.toString(arr));
-
-        System.out.println(Arrays.toString(arr));
-        System.out.println(deleteNumberInArray(arr,5));
-        System.out.println(Arrays.toString(arr));
-
-
-
-
-
+    private static void countChar(){
+        String str = "adafaadfgsdAfafdfdFperneafnAfaf";
+        char[] strArr = str.toCharArray();
+        Map<String, Integer> map  = new HashMap<>();
+        for (int i = 0; i < strArr.length; i++){
+            if (map.containsKey(String.valueOf(strArr[i]))){
+                map.put(String.valueOf(strArr[i]), map.get(String.valueOf(strArr[i])) + 1);
+            }else{
+                map.put(String.valueOf(strArr[i]), 1);
+            }
+        }
+        System.out.println(map);
     }
     private static boolean choiceSort(int[] arr){
         for (int i = 0; i < arr.length ; i++) {

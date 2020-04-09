@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.songsmily.petapi.dao.BlBlogDao">
+    <select id="selectBlogPageByType" resultType="com.songsmily.petapi.entity.BlBlog" parameterType="java.util.Map">
+        select bl_blog.* ,user.avatar_url,user.name from bl_blog left JOIN user on user.id=bl_blog.user_id
+        <where>
+            and bl_blog.deleted=#{params.deleted}
+            and bl_blog.blog_type=#{params.blogType}
+        </where>
+        order by bl_blog.created_time desc
+         limit #{params.begin},#{params.end}
+    </select>
+    <select id="selectBlogById" resultType="com.songsmily.petapi.entity.BlBlog">
+        select bl_blog.* ,user.avatar_url,user.name from bl_blog left JOIN user on user.id=bl_blog.user_id
+        <where>
+            and bl_blog.blog_id=#{blogId}
+        </where>
+    </select>
+</mapper>

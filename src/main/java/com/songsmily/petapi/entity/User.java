@@ -3,6 +3,7 @@ package com.songsmily.petapi.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.crazycake.shiro.AuthCachePrincipal;
 
 import java.io.Serializable;
@@ -13,6 +14,7 @@ import java.io.Serializable;
  * @author SongSmily
  * @since 2019-12-18 06:53:52
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User extends Model<User> implements Serializable, AuthCachePrincipal {
 
     private static final long serialVersionUID = 4297464181093070302L;
