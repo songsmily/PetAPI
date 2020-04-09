@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @since 2020-04-09 09:26:36
  */
 @SuppressWarnings("serial")
-public class BlCollect extends Model<BlCollect> {
+public class BlCollect extends Model<BlCollect> implements Serializable {
     //收藏id
     private String collectionId;
     //帖子id

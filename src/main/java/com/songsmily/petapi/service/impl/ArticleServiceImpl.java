@@ -40,6 +40,7 @@ public class ArticleServiceImpl implements ArticleService {
             @Override
             public <K, V> Void execute(RedisOperations<K, V> redisOperations) throws DataAccessException {
                 redisOperations.opsForHash().putAll((K)("article:" + article.getId()), BeanUtils.beanToMap(article, "userLike"));
+//                redisOperations.opsForCluster()
                 redisOperations.opsForValue().set((K)("article:content:" + article.getId()), (V)article.getContent());
                 String score = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
                 redisOperations.opsForZSet().add((K)"article:ids", (V)article.getId(), Double.parseDouble(score));
