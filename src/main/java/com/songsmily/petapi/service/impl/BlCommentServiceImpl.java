@@ -9,6 +9,7 @@ import com.songsmily.petapi.entity.User;
 import com.songsmily.petapi.enums.ResultEnum;
 import com.songsmily.petapi.exception.BaseException;
 import com.songsmily.petapi.service.BlCommentService;
+import com.songsmily.petapi.service.RedisService;
 import com.songsmily.petapi.utils.ShiroUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +30,10 @@ public class BlCommentServiceImpl extends ServiceImpl<BlCommentDao, BlComment> i
     BlCommentDao blCommentDao;
     @Resource
     BlBlogDao blBlogDao;
+    @Resource
+    RedisService redisService;
+
+
     @Override
     @Transactional
     public Boolean addComment(BlComment comment) {
@@ -50,6 +55,20 @@ public class BlCommentServiceImpl extends ServiceImpl<BlCommentDao, BlComment> i
     @Override
     public List<BlComment> selectComments(String blogId) {
         List<BlComment> comments = blCommentDao.selectCommentAndSecondComment(blogId);
+        comments.forEach(comment -> {
+            //获取点赞总数
+            Integer commentGoodCount = redisService.getCommentGoodCount(comment.getCommentId());
+            //设置点赞总数
+            comment.setCommentGood(commentGoodCount == null ? 0 : commentGoodCount);
+            if (comment.getCommentGood() == 0){
+                //获取当前用户是否点赞
+                comment.setCommentGood(false);
+            } else {
+                //获取当前用户是否点赞
+                boolean isCommentGood = redisService.getIsCommentGood(comment.getCommentId());
+                comment.setCommentGood(isCommentGood);
+            }
+        });
         return comments;
     }
 }

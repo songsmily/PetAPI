@@ -23,8 +23,8 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * 切面 打印请求、返回参数信息
  */
-@Aspect // 定义一个切面
-@Configuration
+//@Aspect // 定义一个切面
+//@Configuration
 public class LogAspect {
     @Resource
     LogService logService;
@@ -38,40 +38,41 @@ public class LogAspect {
 
     @Around("excudeService()")
     public Object doAround(ProceedingJoinPoint pjp) throws Throwable {
-
-        RequestAttributes ra = RequestContextHolder.getRequestAttributes();
-        ServletRequestAttributes sra = (ServletRequestAttributes) ra;
-        HttpServletRequest request = sra.getRequest();
-
-        String method = request.getMethod();
-        String uri = request.getRequestURI();
-        String paraString = JSON.toJSONString(request.getParameterMap());
-//        logger.info("***************************************************");
-//        logger.info("请求开始, URI: {}, method: {}, params: {}", uri, method, paraString);
-
-        Log log = new Log();
-        log.setLogIp(request.getRemoteAddr());
-        log.setLogUrl(uri);
-        log.setLogMethod(method);
-        log.setLogGmtCreate(System.currentTimeMillis());
-        log.setLogParams(paraString);
-        // result的值就是被拦截方法的返回值
-        Result result = (Result) pjp.proceed();
-        log.setLogResult(JSON.toJSONString(result));
-        if (result.getCode() == 100){
-            log.setLogStatus(1);
-        }else{
-            log.setLogStatus(0);
-        }
-        if (uri.equals("/login/adminLogin") && result.getCode() != 100){
-            log.setLogAdminId(-1);
-            log.setLogAdminName("登录失败，信息填写错误！");
-        }else{
-            AdminUser adminuser = ShiroUtil.getUser(new AdminUser());
-            log.setLogAdminId(adminuser.getId());
-            log.setLogAdminName(adminuser.getRealName());
-        }
-        logService.save(log);
-        return result;
+        return null;
+////
+////        RequestAttributes ra = RequestContextHolder.getRequestAttributes();
+////        ServletRequestAttributes sra = (ServletRequestAttributes) ra;
+////        HttpServletRequest request = sra.getRequest();
+////
+////        String method = request.getMethod();
+////        String uri = request.getRequestURI();
+////        String paraString = JSON.toJSONString(request.getParameterMap());
+//////        logger.info("***************************************************");
+//////        logger.info("请求开始, URI: {}, method: {}, params: {}", uri, method, paraString);
+////
+////        Log log = new Log();
+////        log.setLogIp(request.getRemoteAddr());
+////        log.setLogUrl(uri);
+////        log.setLogMethod(method);
+////        log.setLogGmtCreate(System.currentTimeMillis());
+////        log.setLogParams(paraString);
+////        // result的值就是被拦截方法的返回值
+////        Result result = (Result) pjp.proceed();
+////        log.setLogResult(JSON.toJSONString(result));
+////        if (result.getCode() == 100){
+////            log.setLogStatus(1);
+////        }else{
+////            log.setLogStatus(0);
+////        }
+////        if (uri.equals("/login/adminLogin") && result.getCode() != 100){
+////            log.setLogAdminId(-1);
+////            log.setLogAdminName("登录失败，信息填写错误！");
+////        }else{
+////            AdminUser adminuser = ShiroUtil.getUser(new AdminUser());
+////            log.setLogAdminId(adminuser.getId());
+////            log.setLogAdminName(adminuser.getRealName());
+////        }
+////        logService.save(log);
+//        return result;
     }
 }

@@ -11,6 +11,7 @@ import com.songsmily.petapi.dto.Result;
 import com.songsmily.petapi.entity.User;
 import com.songsmily.petapi.enums.ResultEnum;
 import com.songsmily.petapi.service.UserService;
+import com.songsmily.petapi.utils.Image2Base64;
 import com.songsmily.petapi.utils.ShiroUtil;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.apache.shiro.SecurityUtils;
@@ -43,6 +44,20 @@ public class UserController extends ApiController {
     @Autowired
     private UserService userService;
 
+
+    /**
+     * 用户首次登陆系统 完善个人信息
+     * @param user
+     * @return
+     */
+    @RequestMapping("/completeUserInfo")
+    @RequiresPermissions("user-all")
+    public Result completeUserInfo(@RequestBody User user){
+        boolean res  = userService.completeUserInfo(user);
+
+        return new Result(res ? ResultEnum.SUCCESS : ResultEnum.ERROR);
+    }
+
     /**
      * 检测是否存在相同的用户名
      * @param name 用户填写的用户名
@@ -54,6 +69,34 @@ public class UserController extends ApiController {
         //调用Service
         Boolean isrepeat =  userService.isRepeatNickName(name);
         return new Result(isrepeat);
+    }
+
+    /**
+     * 修改数据
+     * @param user 实体对象
+     * @return 修改结果
+     */
+    @PostMapping("/doUpdate")
+    @RequiresPermissions("user-all")
+    public Result update(@RequestBody User user) {
+        return userService.doUpdate(user);
+    }
+
+    /**
+     * 修改数据 移动端
+     * @param user 实体对象
+     * @return 修改结果
+     */
+    @PostMapping("/doUpdateMobile")
+    @RequiresPermissions("user-all")
+    public Result updateMobile(@RequestBody User user) {
+        String oldAvatar = ShiroUtil.getUser(new User()).getAvatarUrl();
+        String oldBase64 = Image2Base64.image2Base64(oldAvatar);
+        if (oldBase64.equals(user.getAvatarUrl())) {
+            user.setAvatarUrl(oldAvatar);
+        }
+
+        return userService.doUpdate(user);
     }
 
     /**
@@ -94,59 +137,16 @@ public class UserController extends ApiController {
     }
 
     /**
-     * 分页查询所有数据
-     *
-     * @param page 分页对象
-     * @param user 查询实体
-     * @return 所有数据
+     * 将用户头像转成base64
+     * @param imgUrl
+     * @return
      */
-    @GetMapping
-    public R selectAll(Page<User> page, User user) {
-        return success(this.userService.page(page, new QueryWrapper<>(user)));
-    }
-
-
-    /**
-     * 通过主键查询单条数据
-     *
-     * @param id 主键
-     * @return 单条数据
-     */
-    @GetMapping("{id}")
-    public R selectOne(@PathVariable Serializable id) {
-        return success(this.userService.getById(id));
-    }
-
-    /**
-     * 新增数据
-     *
-     * @param user 实体对象
-     * @return 新增结果
-     */
-    @PostMapping
-    public R insert(@RequestBody User user) {
-        return success(this.userService.save(user));
-    }
-
-    /**
-     * 修改数据
-     * @param user 实体对象
-     * @return 修改结果
-     */
-    @PostMapping("/doUpdate")
+    @RequestMapping("/getImgBase64")
     @RequiresPermissions("user-all")
-    public Result update(@RequestBody User user) {
-        return userService.doUpdate(user);
-    }
-
-    /**
-     * 删除数据
-     *
-     * @param idList 主键结合
-     * @return 删除结果
-     */
-    @DeleteMapping
-    public R delete(@RequestParam("idList") List<Long> idList) {
-        return success(this.userService.removeByIds(idList));
+    public Result getImgBase64(String imgUrl){
+        String base64 = userService.getImgBase64(imgUrl);
+        Result result = new Result();
+        result.setData(base64);
+        return result;
     }
 }

@@ -3,6 +3,7 @@ package com.songsmily.petapi.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.songsmily.petapi.dto.Result;
 import com.songsmily.petapi.entity.PetCard;
+import com.songsmily.petapi.entity.Petinfo;
 
 /**
  * (PetCard)表服务接口
@@ -17,4 +18,8 @@ public interface PetCardService extends IService<PetCard> {
     Result insertPetCard(PetCard petCard);
 
     Result updatePetCard(PetCard petCard);
+
+    Petinfo returnPetCardImmunityInfosByPetId(String petId);
+
+    Result updatePetCardMobile(PetCard petCard);
 }

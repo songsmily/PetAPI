@@ -1,5 +1,6 @@
 package com.songsmily.petapi.controller;
 
+import com.songsmily.petapi.aspect.MyLog;
 import com.songsmily.petapi.dto.Result;
 import com.songsmily.petapi.entity.AdminUser;
 import com.songsmily.petapi.service.AdminUserService;
@@ -16,6 +17,7 @@ public class AdminLoginController {
     @Resource
     AdminUserService adminUserService;
 
+    @MyLog(value = "全局操作--登入系统")
     @RequestMapping("/adminLogin")
     public Result doLogin(AdminUser adminUser){
 

@@ -19,4 +19,8 @@ public interface UserService extends IService<User> {
     Result doUpdate(User user);
 
     Result resetPassword(String password);
+
+    boolean completeUserInfo(User user);
+
+    String getImgBase64(String imgUrl);
 }

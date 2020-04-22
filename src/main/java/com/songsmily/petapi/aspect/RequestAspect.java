@@ -17,8 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * 切面 打印请求、返回参数信息
  */
-@Aspect // 定义一个切面
-@Configuration
+//@Aspect // 定义一个切面
+//@Configuration
 public class RequestAspect {
     private static final Logger logger = LoggerFactory.getLogger(RequestAspect.class);
 

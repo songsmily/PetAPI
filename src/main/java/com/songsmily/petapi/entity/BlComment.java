@@ -3,6 +3,10 @@ package com.songsmily.petapi.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -29,8 +33,17 @@ public class BlComment extends Model<BlComment>  implements Serializable{
     private String commentSecond;
     //评论时间
     private Long createdTime;
+    //审核状态 0 未审核  1 已审核
+    private Integer commentStatus;
     //是否删除，0否1是
     private Integer deleted;
+
+    //当前用户是否点赞
+    @TableField(exist = false)
+    private Boolean isCommentGood;
+    //点赞总数
+    @TableField(exist = false)
+    private Integer commentGoodCount;
     //评论人昵称
     @TableField(exist = false)
     private String commentUserName;
@@ -41,6 +54,33 @@ public class BlComment extends Model<BlComment>  implements Serializable{
     //二级评论
     @TableField(exist = false)
     private List<BlCommentSec> commentSecList;
+
+    @Override
+    public String toString() {
+        return "BlComment{" +
+                "commentId='" + commentId + '\'' +
+                ", commentContent='" + commentContent + '\'' +
+                ", commentUser=" + commentUser +
+                ", commentBlog='" + commentBlog + '\'' +
+                ", commentGood=" + commentGood +
+                ", commentSecond='" + commentSecond + '\'' +
+                ", createdTime=" + createdTime +
+                ", deleted=" + deleted +
+                ", isCommentGood=" + isCommentGood +
+                ", commentGoodCount=" + commentGoodCount +
+                ", commentUserName='" + commentUserName + '\'' +
+                ", commentUserAvatarUrl='" + commentUserAvatarUrl + '\'' +
+                ", commentSecList=" + commentSecList +
+                '}';
+    }
+
+    public Integer getCommentStatus() {
+        return commentStatus;
+    }
+
+    public void setCommentStatus(Integer commentStatus) {
+        this.commentStatus = commentStatus;
+    }
 
     public String getCommentId() {
         return commentId;
@@ -78,6 +118,42 @@ public class BlComment extends Model<BlComment>  implements Serializable{
         return commentGood;
     }
 
+    public void setCommentGood(Boolean commentGood) {
+        isCommentGood = commentGood;
+    }
+
+    public Integer getCommentGoodCount() {
+        return commentGoodCount;
+    }
+
+    public void setCommentGoodCount(Integer commentGoodCount) {
+        this.commentGoodCount = commentGoodCount;
+    }
+
+    public String getCommentUserName() {
+        return commentUserName;
+    }
+
+    public void setCommentUserName(String commentUserName) {
+        this.commentUserName = commentUserName;
+    }
+
+    public String getCommentUserAvatarUrl() {
+        return commentUserAvatarUrl;
+    }
+
+    public void setCommentUserAvatarUrl(String commentUserAvatarUrl) {
+        this.commentUserAvatarUrl = commentUserAvatarUrl;
+    }
+
+    public List<BlCommentSec> getCommentSecList() {
+        return commentSecList;
+    }
+
+    public void setCommentSecList(List<BlCommentSec> commentSecList) {
+        this.commentSecList = commentSecList;
+    }
+
     public void setCommentGood(Integer commentGood) {
         this.commentGood = commentGood;
     }
@@ -104,30 +180,6 @@ public class BlComment extends Model<BlComment>  implements Serializable{
 
     public void setDeleted(Integer deleted) {
         this.deleted = deleted;
-    }
-
-    public String getCommentUserName() {
-        return commentUserName;
-    }
-
-    public void setCommentUserName(String commentUserName) {
-        this.commentUserName = commentUserName;
-    }
-
-    public String getCommentUserAvatarUrl() {
-        return commentUserAvatarUrl;
-    }
-
-    public void setCommentUserAvatarUrl(String commentUserAvatarUrl) {
-        this.commentUserAvatarUrl = commentUserAvatarUrl;
-    }
-
-    public List<BlCommentSec> getCommentSecList() {
-        return commentSecList;
-    }
-
-    public void setCommentSecList(List<BlCommentSec> commentSecList) {
-        this.commentSecList = commentSecList;
     }
 
     /**

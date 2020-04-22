@@ -3,6 +3,8 @@ package com.songsmily.petapi.shiro.realm;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.songsmily.petapi.entity.User;
+import com.songsmily.petapi.enums.ResultEnum;
+import com.songsmily.petapi.exception.BaseException;
 import com.songsmily.petapi.service.UserService;
 import com.songsmily.petapi.shiro.common.UserToken;
 import org.apache.shiro.SecurityUtils;
@@ -36,7 +38,12 @@ public class APIUserRealm extends AuthorizingRealm {
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         //1.获取已认证的用户数据
         System.err.println("进入API用户授权方法");
-        User user = (User) principalCollection.getPrimaryPrincipal();//得到唯一的安全数据
+        User user;
+        try {
+            user = (User) principalCollection.getPrimaryPrincipal();//得到唯一的安全数据
+        } catch (ClassCastException e) {
+            throw new BaseException(ResultEnum.REPEAT_LOGIN);
+        }
         //2.根据用户数据获取用户的权限信息（所有角色，所有权限）
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         info.addRole("user");

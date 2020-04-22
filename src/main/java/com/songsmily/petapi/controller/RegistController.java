@@ -10,6 +10,7 @@ import com.songsmily.petapi.enums.ResultEnum;
 import com.songsmily.petapi.service.AdminUserService;
 import com.songsmily.petapi.service.UserService;
 import com.songsmily.petapi.utils.VerifyCodeUtils;
+import com.sun.org.apache.regexp.internal.RE;
 import com.zhenzi.sms.ZhenziSmsClient;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,8 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 @Controller
@@ -73,35 +76,34 @@ public class RegistController {
     public Result sendCode(String memPhone, HttpSession httpSession){
         String code = String.valueOf(new Random().nextInt(999999));
         ZhenziSmsClient client = new ZhenziSmsClient(appUrl, appId, appSecret);
-        JSONObject json = null;
-        json = new JSONObject();
-        json.put("memPhone",memPhone);
-        json.put("code",code);
-        json.put("createTime",System.currentTimeMillis());
-        System.err.println("验证码为: "  + code);
+        JSONObject json = new JSONObject();
+//        json.put("memPhone",memPhone);
+//        json.put("code",code);
+//        json.put("createTime",System.currentTimeMillis());
+//        System.err.println("验证码为: "  + code);
         // 将认证码存入SESSION
-        httpSession.setAttribute("MessageCode",json);
-        return new Result(ResultEnum.SUCCESS);
-//        Map<String, String> params = new HashMap<String, String>();
-//        params.put("message", "尊敬的宠物之家用户，您的验证码为：" + code + "，该验证码5分钟内有效，请勿泄露于他人。");
-//        params.put("number", memPhone);
-//        try {
-//            JSONObject json = null;
+//        httpSession.setAttribute("MessageCode",json);
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("message", "尊敬的宠物之家用户，您的验证码为：" + code + "，该验证码5分钟内有效，请勿泄露于他人。");
+        params.put("number", memPhone);
+
+        try {
 //            String result = client.send(params);
 //            json = JSONObject.parseObject(result);
 //            if (json.getIntValue("code") != 0){
-//                return new Result(CodeMsg.MESSAGESENDERROR);
+//                return new Result(ResultEnum.ERROR);
 //            }
 //            json = new JSONObject();
-//            json.put("memPhone",memPhone);
-//            json.put("code",code);
-//            json.put("createTime",System.currentTimeMillis());
-//            // 将认证码存入SESSION
-//            httpSession.setAttribute("MessageCode",json);
-//        } catch (Exception e) {
-//            return new Result(CodeMsg.SERVERERROR);
-//        }
-//        return new Result(CodeMsg.SUCCESS);
+            json.put("memPhone",memPhone);
+            json.put("code",code);
+            json.put("createTime",System.currentTimeMillis());
+            System.err.println("-----------------验证码：" + code);
+            // 将认证码存入SESSION
+            httpSession.setAttribute("MessageCode",json);
+        } catch (Exception e) {
+            return new Result(ResultEnum.ERROR);
+        }
+        return new Result(ResultEnum.SUCCESS);
     }
     @RequestMapping("checkMessageCode")
     public Result checkMessageCode(Integer messageCode,HttpSession httpSession){
@@ -109,6 +111,11 @@ public class RegistController {
             return new Result(ResultEnum.ERROR);
         }
         JSONObject json = (JSONObject) httpSession.getAttribute("MessageCode");
+        long createTime = (System.currentTimeMillis() - json.getLongValue("createTime")) / (1000 * 60);
+
+        if ((System.currentTimeMillis() - json.getLongValue("createTime")) / (1000 * 60) > 5) {
+            return new Result(ResultEnum.EXPIRED_ERROR);
+        }
         if (messageCode == json.getIntValue("code")){
             return new Result(ResultEnum.SUCCESS);
         }else{

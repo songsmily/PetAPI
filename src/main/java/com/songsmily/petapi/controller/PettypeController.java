@@ -41,6 +41,15 @@ public class PettypeController extends ApiController {
         return petTypeArray;
     }
     /**
+     * 查询宠物分类数据 手机端
+     */
+    @RequiresPermissions("user-all")
+    @RequestMapping("/getPetTypeArrayMobile")
+    public Result getPetTypeArrayMobile() throws InterruptedException {
+        Result petTypeArray = pettypeService.getPetTypeArrayMobile();
+        return petTypeArray;
+    }
+    /**
      * 根据宠物分类信息查询详细信息
      */
     @RequiresPermissions("user-all")

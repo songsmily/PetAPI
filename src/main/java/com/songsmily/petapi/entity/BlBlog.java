@@ -3,6 +3,9 @@ package com.songsmily.petapi.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serializable;
 
@@ -13,6 +16,9 @@ import java.io.Serializable;
  * @since 2020-04-06 11:01:31
  */
 @SuppressWarnings("serial")
+@Getter
+@Setter
+@ToString
 public class BlBlog extends Model<BlBlog> implements Serializable {
     //帖子id
     @TableId(value = "blog_id")
@@ -47,155 +53,15 @@ public class BlBlog extends Model<BlBlog> implements Serializable {
     private Integer version;
     //是否删除，0否1是
     private Integer deleted;
+    //审核状态 1 管理员已审核 0:等待管理员审核
+    private Integer blogStatus;
+
     @TableField(exist = false)
     private String name;
     @TableField(exist = false)
     private String avatarUrl;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getAvatarUrl() {
-        return avatarUrl;
-    }
-
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
-    }
-
-    public String getBlogId() {
-        return blogId;
-    }
-
-    public void setBlogId(String blogId) {
-        this.blogId = blogId;
-    }
-
-    public Integer getBlogType() {
-        return blogType;
-    }
-
-    public void setBlogType(Integer blogType) {
-        this.blogType = blogType;
-    }
-
-    public String getBlogTitle() {
-        return blogTitle;
-    }
-
-    public void setBlogTitle(String blogTitle) {
-        this.blogTitle = blogTitle;
-    }
-
-    public String getBlogTag() {
-        return blogTag;
-    }
-
-    public void setBlogTag(String blogTag) {
-        this.blogTag = blogTag;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public String getBlogImage() {
-        return blogImage;
-    }
-
-    public void setBlogImage(String blogImage) {
-        this.blogImage = blogImage;
-    }
-
-    public String getBlogContent() {
-        return blogContent;
-    }
-
-    public void setBlogContent(String blogContent) {
-        this.blogContent = blogContent;
-    }
-
-    public String getBlogRemark() {
-        return blogRemark;
-    }
-
-    public void setBlogRemark(String blogRemark) {
-        this.blogRemark = blogRemark;
-    }
-
-    public Integer getBlogGoods() {
-        return blogGoods;
-    }
-
-    public void setBlogGoods(Integer blogGoods) {
-        this.blogGoods = blogGoods;
-    }
-
-    public Integer getBlogRead() {
-        return blogRead;
-    }
-
-    public void setBlogRead(Integer blogRead) {
-        this.blogRead = blogRead;
-    }
-
-    public Integer getBlogCollect() {
-        return blogCollect;
-    }
-
-    public void setBlogCollect(Integer blogCollect) {
-        this.blogCollect = blogCollect;
-    }
-
-    public Integer getBlogComment() {
-        return blogComment;
-    }
-
-    public void setBlogComment(Integer blogComment) {
-        this.blogComment = blogComment;
-    }
-
-    public Long getCreatedTime() {
-        return createdTime;
-    }
-
-    public void setCreatedTime(Long createdTime) {
-        this.createdTime = createdTime;
-    }
-
-    public Long getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Long updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public Integer getVersion() {
-        return version;
-    }
-
-    public void setVersion(Integer version) {
-        this.version = version;
-    }
-
-    public Integer getDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(Integer deleted) {
-        this.deleted = deleted;
-    }
-
+    @TableField(exist = false)
+    private Long collectTime;
     /**
      * 获取主键值
      *

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * (PetImmunity)表控制层
@@ -37,10 +38,34 @@ public class PetImmunityController  {
         return petImmunityService.insertImmnuity(petImmunity);
     }
 
+
     @RequiresPermissions("user-all")
     @RequestMapping("updateImmunity")
     public Result updateImmunity(@RequestBody PetImmunity petImmunity){
         return petImmunityService.updateImmunity(petImmunity);
     }
 
+    /**
+     * 根据petId查询防疫信息
+     * @param petId
+     * @return
+     */
+    @RequiresPermissions("user-all")
+    @RequestMapping("getImmunityById")
+    public Result getImmunityById(String petId) {
+        List<PetImmunity> list = petImmunityService.getImmunityById(petId);
+        return new Result(list);
+    }
+
+    /**
+     * 根据immunityID查询防疫信息
+     * @param immunityId
+     * @return
+     */
+    @RequiresPermissions("user-all")
+    @RequestMapping("getImmunityByImmunityId")
+    public Result getImmunityByImmunityId(String immunityId) {
+        PetImmunity immunity = petImmunityService.getImmunityInfoByImmunityId(immunityId);
+        return new Result(immunity);
+    }
 }

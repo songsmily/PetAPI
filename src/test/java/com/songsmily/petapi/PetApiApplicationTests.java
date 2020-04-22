@@ -1,159 +1,113 @@
 package com.songsmily.petapi;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.aliyun.oss.internal.OSSUtils;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.songsmily.petapi.dao.PettypeDao;
-import com.songsmily.petapi.dao.PlotDao;
-import com.songsmily.petapi.entity.Pettype;
-import com.songsmily.petapi.service.impl.MailServiceImpl;
-import com.songsmily.petapi.utils.IdWorker;
+import com.baidu.aip.contentcensor.AipContentCensor;
+import com.songsmily.petapi.config.BaiDuPApiConfig;
+import com.songsmily.petapi.utils.CommonUtils;
 import com.songsmily.petapi.utils.OssUtil;
-import com.songsmily.petapi.utils.RedisUtils;
-import com.sun.org.apache.xpath.internal.operations.Bool;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.mail.MailException;
-import org.springframework.mail.MailSender;
-import org.springframework.mail.SimpleMailMessage;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
+@RunWith(SpringRunner.class)
 @SpringBootTest
-class PetApiApplicationTests {
+public class PetApiApplicationTests {
 
-    @Autowired
-    MailServiceImpl mailService;
-    @Autowired
-    private TemplateEngine templateEngine;
-    @Resource
-    PlotDao plotDao;
-    @Resource
-    OssUtil ossUtils;
-    @Resource
-    PettypeDao pettypeDao;
-    @Resource
-    RedisUtils redisUtils;
-    @Resource
-    IdWorker idWorker;
     @Resource
     RedisTemplate redisTemplate;
+    @Resource
+    OssUtil ossUtil;
+
     @Test
-    public void redis1() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("username", "聂启松");
-        map.put("gender", "男");
-        for (int j = 0; j < 2; j++) {
-            long userId = idWorker.nextId();
-            map.put("userid:", userId);
-            for (int i = 5; i < 16; i++) {
-                long id = idWorker.nextId();
-                String score = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-                redisTemplate.opsForZSet().add("user:ids", id, Double.parseDouble(score));
-                redisUtils.hmset("user:" + id, map);
+    public void test3() throws JSONException {
+        JSONObject res = BaiDuPApiConfig.client.textCensorUserDefined("中新网11月28日电据澳洲网报道，澳大利亚宠物保险公司近日公布了2019年澳大利亚最受欢迎宠物名。其中，英国王子幼子的名字阿尔奇成为了最受欢迎雄性狗狗名字的第一名，而洛基成为了最受欢迎雄性猫咪名字的第一名。最受欢迎雌性狗狗和猫咪名字的第一名则全部被露娜包揽。\n" +
+                "\n" +
+                "王室宝宝名字受欢迎\n" +
+                "\n" +
+                "据报道，澳大利亚宠物保险公司近日在研究了全澳15万只新投保宠物的数据后，总结出2019年最受欢迎宠物名字排行榜。根据榜单显示，最受欢迎宠物名字主要来源于英国王室宝宝和迪斯尼经典。流行文化激发了人们的想象力，其中英国哈里王子和梅根的幼子阿尔奇的名字成为了最受欢迎雄性宠物狗名字第一位和最受欢迎雄性宠物猫名字第二名。\n" +
+                "\n" +
+                "人类名字也被广泛应用于宠物名字上，其中有大量的雄性宠物狗叫查理，雌性宠物猫叫Chloe、Poppy和Mia。\n" +
+                "\n" +
+                "“露娜”蝉联第一名桂冠\n" +
+                "\n" +
+                "露娜连续第二年获得了澳大利亚最受欢迎雌性宠物猫名字第一名，而第一次上榜的名字包括受到食物启发的名字奥利奥，和迪斯尼主题的名字娜娜。\n" +
+                "\n" +
+                "受欢迎的雌性宠物狗的名字一般由4个字母组成，如Coco、Ruby和Lola。而以-y和-ie结尾的名字则在雄性宠物中比较常见，如Buddy、Teddy和Bailey以及Alfie和Ollie。\n" +
+                "\n" +
+                "今年新增加的宠物狗名字包括Leo、Millie和Frankie。\n" +
+                "\n" +
+                "澳大利亚宠物保险公司发言人克里顿表示，2019年是“王室狂热”的一年，而传统的名字也继续占据主导地位。\n" +
+                "\n" +
+                "\n" +
+                "本文转自有宠网：http://www.yc.cn/news/news-41463.html");
+        System.err.println(res);
+        System.err.println(res.getString("conclusion"));
+//        redisTemplate.opsForValue().decrement("filter:Blog:Count",1);
+//        System.err.println((System.currentTimeMillis() - 1586939588687L) / (1000 * 60));
+    }
+
+    @Test
+    public void test2(){
+        /**
+         * ![1576810814361.jpeg](http://oss.songsmily.cn/images/1586770586704.1576810814361.jpeg)
+         * # 一级标题
+         * # 一级标题
+         * # 一级标题# 一级标题# 一级标题
+         * # 一级标题
+         * # 一级标题
+         * # 一级标题
+         * # 一级标题
+         */
+        String str = "![1576810814361.jpeg](http://oss.songsmily.cn/images/1586770586704.1576810814361.jpeg)\n" +
+                "# 一级标题\n" +
+                "# 一级标题\n" +
+                "# 一级标题# 一级标题# 一级标题\n" +
+                "# 一级标题\n" +
+                "# 一级标题\n" +
+                "# 一级标题\n" +
+                "# 一级标题" +
+                "![1576810814361.jpeg](http://oss.songsmily.cn/images/1586770586704.1576810814361.jpeg)\n" +
+                "# 一级标题\n" +
+                "# 一级标题\n" +
+                "# 一级标题# 一级标题# 一级标题\n" +
+                "# 一级标题\n" +
+                "# 一级标题\n" +
+                "# 一级标题\n" +
+                "# 一级标题";
+        List<String> files = new ArrayList<>();
+        String sub = "";
+        while (true) {
+            if (str.indexOf("http://oss.songsmily.cn/images/") != -1) {
+                str = str.substring(str.indexOf("http://oss.songsmily.cn/images/"));
+                System.out.println(str.substring(0,str.indexOf(")")));
+
+            } else {
+                break;
             }
         }
+//        System.err.println("http://oss.songsmily.cn/images/".length());
+//        System.out.println(str.substring(str.indexOf("http://oss.songsmily.cn/images/faf") + 31));
+
     }
-
     @Test
-    public void testPet(){
-        List<Pettype> pettypes = pettypeDao.selectList(null);
-        Set<String> setOne = new HashSet<>();
-        Set<String> setTwo = new HashSet<>();
-
-        for (Pettype pettype:pettypes) {
-            setOne.add(pettype.getPetClassifyOne());
-            setTwo.add(pettype.getPetClassifyTwo());
+    public void test(){
+        Set keys = redisTemplate.keys("*f62556d7-f416-47ab-bf90-d00ef482b7d4*");
+        Long delete = redisTemplate.delete(keys);
+        System.err.println(delete);
+        Object[] objects = keys.toArray();
+        for (int i = 0; i < objects.length; i++) {
+            System.err.println(objects[i]);
         }
-        List<String> list = new ArrayList<>(setTwo);
-        list.sort(null);
-        System.err.println(list);
-        System.err.println(setTwo);
-
-        List<Map<String,Object>> resultOne = new ArrayList<>();
-        for (String itemOne : setOne){
-            Map<String, Object> mapOne = new HashMap<>();
-            mapOne.put("label", itemOne);
-            mapOne.put("value", 1);
-            List<Map<String,Object>> resultTwo = new ArrayList<>();
-            for (String itemTwo :setTwo){
-                Map<String, Object> mapTwo = new HashMap<>();
-                mapTwo.put("label", itemTwo);
-                mapTwo.put("value", 2);
-                List<Map<String,Object>> foorThree = new ArrayList<>();
-                Boolean pos = false;
-                for (Pettype pettypeThree:pettypes) {
-                    if (pettypeThree.getPetClassifyTwo().equals(itemTwo) && pettypeThree.getPetClassifyOne().equals(itemOne)){
-                        pos = true;
-                        Map<String, Object> mapThree = new HashMap<>();
-                        mapThree.put("label", pettypeThree.getPetClassifyThree());
-                        mapThree.put("value", pettypeThree.getPetTypeId());
-                        foorThree.add(mapThree);
-                    }
-                }
-                if (pos){
-                    mapTwo.put("children",foorThree);
-                    resultTwo.add(mapTwo);
-                    mapOne.put("children",resultTwo);
-                }
-
-            }
-            resultOne.add(mapOne);
-        }
-
-
-        System.err.println(JSONObject.toJSONString( resultOne));
     }
-    @Test
-    public  void testOss(){
-        String str = "http://oss.songsmily.cn/images/1576794405596.jpeg";
-        str = str.substring(str.lastIndexOf("images/"));
-        System.err.println(str);
-//
-//        String filename = "images/1576794099160.jpeg";
-//        List<String> fileNames = new ArrayList<>();
-//        fileNames.add("images/01.jpg");
-//        fileNames.add("images/02.jpg");
-//        fileNames.add("images/03.jpg");
-//        fileNames.add("images/04.jpg");
-//        fileNames.add("images/05.jpg");
-//        fileNames.add("images/06.jpg");
-//        fileNames.add("images/07.jpg");
-//        fileNames.add("images/08.jpg");
-//        fileNames.add("images/09.jpg");
-//        fileNames.add("images/010.jpg");
-//        fileNames.add("images/011.jpg");
-//        fileNames.add("images/012.jpg");
-//        ossUtils.deleteFile20SS(fileNames);
-    }
-
-    @Test
-    public void testDao(){
-        Object json =  JSONObject.toJSON(plotDao.queryPlotAndBuild());
-        System.err.println(json);
-    }
-    @Test
-    public void test()
-    {
-        mailService.sendSimpleMail("2874643810@qq.com","测试","测试");
-    }
-    @Test
-    public void testTemplateMail() {
-        //向Thymeleaf模板传值，并解析成字符串
-        Context context = new Context();
-        context.setVariable("id", "001");
-        String emailContent = templateEngine.process("successMail", context);
-
-        mailService.sendHtmlMail("2874643810@qq.com", "注册确认信息", emailContent);
-    }
-
 
 }

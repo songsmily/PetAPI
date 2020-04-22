@@ -7,11 +7,14 @@ import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.songsmily.petapi.dto.BasePage;
+import com.songsmily.petapi.dto.BlogSelectParams;
 import com.songsmily.petapi.dto.Result;
 import com.songsmily.petapi.entity.BlBlog;
 import com.songsmily.petapi.enums.ResultEnum;
 import com.songsmily.petapi.exception.BaseException;
 import com.songsmily.petapi.service.BlBlogService;
+import com.songsmily.petapi.service.BlCheckService;
+import com.songsmily.petapi.utils.ContentReview;
 import com.songsmily.petapi.utils.OssUtil;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +40,64 @@ public class BlBlogController {
     @Resource
     private BlBlogService blBlogService;
 
+    @Resource
+    BlCheckService blCheckService;
+
+    /**
+     * 内容审核对象
+     */
+    @Resource
+    ContentReview contentReview;
+
+    /**
+     * 根据帖子ID删除帖子
+     * @param blogId
+     * @return
+     */
+
+    @RequiresPermissions("user-all")
+    @RequestMapping("deleteBlog")
+    public Result deleteBlog(String blogId) {
+        boolean b = blCheckService.doBlogDelete(blogId);
+
+        return new Result(b ? ResultEnum.SUCCESS : ResultEnum.ERROR);
+    }
+
+    /**
+     * 通过热门标签 查询帖子
+     * @param params
+     * @return
+     */
+    @RequiresPermissions("user-all")
+    @RequestMapping("getBlogInfoByHotTag")
+    public Result getBlogInfoByHotTag(@RequestBody BlogSelectParams params){
+        BasePage<List> page = blBlogService.getBlogInfoByHotTag(params);
+        return new Result(page);
+    }
+
+    /**
+     * 获取我收藏的帖子
+     * @param params
+     * @return
+     */
+    @RequiresPermissions("user-all")
+    @RequestMapping("getMyCollect")
+    public Result getMyCollect(@RequestBody BlogSelectParams params){
+        BasePage<List> page = blBlogService.getMyCollect(params);
+        return new Result(page);
+    }
+
+    /**
+     * 获取我的帖子
+     * @param params
+     * @return
+     */
+    @RequiresPermissions("user-all")
+    @RequestMapping("getMyBlog")
+    public Result getMyBlog(@RequestBody BlogSelectParams params){
+        BasePage<List> page = blBlogService.getMyBlog(params);
+        return new Result(page);
+    }
 
     /**
      * 根据帖子ID查询帖子信息
@@ -63,9 +124,6 @@ public class BlBlogController {
     @RequiresPermissions("user-all")
     @RequestMapping("getBlogInType")
     public Result getBlogInType(Integer pageSize, Integer currentPage, Integer activeType){
-        System.out.println(pageSize);
-        System.out.println(currentPage);
-        System.out.println(activeType);
         BasePage<List> basePage = blBlogService.getBlogInType(pageSize, currentPage, activeType);
 
         return new Result(basePage);
@@ -79,6 +137,9 @@ public class BlBlogController {
     @RequiresPermissions("user-all")
     @RequestMapping("/postBlogImage")
     public Result postBlogImage(MultipartFile image) {
+        //审核图片
+        contentReview.reviewImage(image);
+
         String imageUrl = blBlogService.postBlogImage(image);
         Result result = new Result();
         result.setData(imageUrl);
@@ -93,8 +154,9 @@ public class BlBlogController {
     @RequiresPermissions("user-all")
     @RequestMapping("/deleteBlogImage")
     public Result deleteBlogImage(String imageUrl) {
-        System.out.println(imageUrl);
-        blBlogService.deleteBlogImage(imageUrl);
+        if (imageUrl != null) {
+            blBlogService.deleteBlogImage(imageUrl);
+        }
 
         return new Result(ResultEnum.SUCCESS);
     }
@@ -107,6 +169,9 @@ public class BlBlogController {
     @RequiresPermissions("user-all")
     @RequestMapping("/add")
     public Result addBlog(@RequestBody BlBlog blBlog) {
+        //审核
+        contentReview.reviewText(blBlog.getBlogContent()  + blBlog.getBlogTitle());
+
         if (null == blBlog){
             throw new BaseException(ResultEnum.PARAMS_ERROR);
         }

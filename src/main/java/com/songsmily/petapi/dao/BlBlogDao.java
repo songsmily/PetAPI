@@ -2,6 +2,7 @@ package com.songsmily.petapi.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.songsmily.petapi.entity.BlBlog;
+import com.songsmily.petapi.entity.BlCollect;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -18,4 +19,10 @@ public interface BlBlogDao extends BaseMapper<BlBlog> {
     List<BlBlog> selectBlogPageByType(@Param("params") Map<String, Object> selectMapper);
 
     BlBlog selectBlogById(String blogId);
+
+    List<BlBlog> selectBlogPageByHotTag(@Param("params") Map<String, Object> selectMap);
+
+    List<BlBlog> selectBlogByIds(@Param("blCollects") List<BlCollect> blCollects);
+
+    Integer updateBlogStatusById(String blogId);
 }

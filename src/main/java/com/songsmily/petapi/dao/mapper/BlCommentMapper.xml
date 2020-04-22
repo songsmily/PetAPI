@@ -19,6 +19,25 @@
         </where>
         order by bl_comment.created_time desc
     </select>
+<!--    查询一级评论-->
+    <select id="selectComments" resultMap="comment" parameterType="java.util.Map">
+        select bl_comment.* ,  user.name as comment_user_name from bl_comment left join user
+        on bl_comment.comment_user=user.id
+        where bl_comment.comment_status=0
+        order by bl_comment.created_time desc
+        limit #{params.begin},#{params.end}
+    </select>
+    <resultMap id="comment" type="com.songsmily.petapi.entity.BlComment">
+        <id column="comment_id" jdbcType="VARCHAR" property="commentId" />
+        <result column="comment_content" jdbcType="VARCHAR" property="commentContent" />
+        <result column="comment_user" jdbcType="INTEGER" property="commentUser" />
+        <result column="comment_blog" jdbcType="VARCHAR" property="commentBlog" />
+        <result column="comment_good" jdbcType="INTEGER" property="commentGood" />
+        <result column="created_time" jdbcType="BIGINT" property="createdTime" />
+        <result column="deleted" jdbcType="INTEGER" property="deleted" />
+        <result column="comment_second" jdbcType="INTEGER" property="commentSecond" />
+        <result column="comment_user_name" jdbcType="VARCHAR" property="commentUserName" />
+    </resultMap>
     <resultMap id="comment_and_comment_second" type="com.songsmily.petapi.entity.BlComment">
         <id column="comment_id" jdbcType="VARCHAR" property="commentId" />
         <result column="comment_content" jdbcType="VARCHAR" property="commentContent" />

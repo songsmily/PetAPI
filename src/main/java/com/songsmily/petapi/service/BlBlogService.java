@@ -3,7 +3,9 @@ package com.songsmily.petapi.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.songsmily.petapi.dto.BasePage;
+import com.songsmily.petapi.dto.BlogSelectParams;
 import com.songsmily.petapi.entity.BlBlog;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -26,4 +28,10 @@ public interface BlBlogService extends IService<BlBlog> {
     BasePage<List> getBlogInType(Integer pageSize, Integer currentPage, Integer activeType);
 
     Map<String, Object> getBlogInfoById(String blogId);
+
+    BasePage<List> getBlogInfoByHotTag(BlogSelectParams params);
+
+    BasePage<List> getMyBlog(BlogSelectParams params);
+
+    BasePage<List> getMyCollect(BlogSelectParams params);
 }

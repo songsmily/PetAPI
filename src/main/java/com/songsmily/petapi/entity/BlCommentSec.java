@@ -28,6 +28,8 @@ public class BlCommentSec extends Model<BlCommentSec> {
     private Long createdTime;
     //是否删除，0否1是
     private Integer deleted;
+    //审核状态 0 未审核  1 已审核
+    private Integer secStatus;
     //评论人昵称
     @TableField(exist = false)
     private String secCommentUserName;
@@ -49,6 +51,14 @@ public class BlCommentSec extends Model<BlCommentSec> {
 
     public void setSecCommentUserAvatarUrl(String secCommentUserAvatarUrl) {
         this.secCommentUserAvatarUrl = secCommentUserAvatarUrl;
+    }
+
+    public Integer getSecStatus() {
+        return secStatus;
+    }
+
+    public void setSecStatus(Integer secStatus) {
+        this.secStatus = secStatus;
     }
 
     @Override

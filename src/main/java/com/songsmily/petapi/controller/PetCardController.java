@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.songsmily.petapi.dto.Result;
 import com.songsmily.petapi.entity.PetCard;
+import com.songsmily.petapi.entity.Petinfo;
 import com.songsmily.petapi.service.PetCardService;
 import com.songsmily.petapi.utils.BASE64DecodedMultipartFile;
 import com.songsmily.petapi.utils.OssUtil;
@@ -41,6 +42,20 @@ public class PetCardController {
     @RequestMapping("returnPetCardImmunityInfos")
     public Result returnPetCardImmunityInfos(){
         return petCardService.returnPetCardImmunityInfos();
+
+    }
+
+
+
+    /**
+     * 返回宠物信息、免疫证书信息和免疫信息 根据PetId
+     * @return
+     */
+    @RequiresPermissions("user-all")
+    @RequestMapping("returnPetCardImmunityInfosByPetId")
+    public Result returnPetCardImmunityInfosByPetId(String petId){
+        Petinfo petinfo = petCardService.returnPetCardImmunityInfosByPetId(petId);
+        return new Result(petinfo);
     }
 
     /**
@@ -65,6 +80,18 @@ public class PetCardController {
     public Result reUploadPetCard(@RequestBody PetCard petCard){
 
         return petCardService.updatePetCard(petCard);
+    }
+
+    /**
+     * 移动端修改宠物免疫证书信息
+     * @param petCard
+     * @return
+     */
+    @RequiresPermissions("user-all")
+    @RequestMapping("reUploadPetCardMobile")
+    public Result reUploadPetCardMobile(@RequestBody PetCard petCard){
+
+        return petCardService.updatePetCardMobile(petCard);
     }
 
 }

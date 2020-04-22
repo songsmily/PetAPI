@@ -36,4 +36,14 @@ public class GoodServiceImpl implements GoodService {
         boolean b = redisService.removeBlogGood(blogId);
         return b;
     }
+
+    @Override
+    public boolean removeCommentGood(String commentId) {
+        return redisService.removeCommentGood(commentId);
+    }
+
+    @Override
+    public boolean addCommentGood(String commentId) {
+        return redisService.addCommentGood(commentId);
+    }
 }

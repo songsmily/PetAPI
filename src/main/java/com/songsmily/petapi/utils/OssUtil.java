@@ -81,6 +81,7 @@ public class OssUtil {
             DeleteObjectsResult deleteObjectsResult = ossClient.deleteObjects(deleteObjectsRequest);
             ossClient.shutdown();
         }catch (Exception e){
+            e.printStackTrace();
             throw new BaseException(ResultEnum.ERROR);
         }
         return null;

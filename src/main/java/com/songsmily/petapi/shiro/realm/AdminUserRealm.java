@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.songsmily.petapi.entity.AdminUser;
 import com.songsmily.petapi.entity.User;
+import com.songsmily.petapi.enums.ResultEnum;
+import com.songsmily.petapi.exception.BaseException;
 import com.songsmily.petapi.service.AdminUserService;
 import com.songsmily.petapi.service.UserService;
 import org.apache.shiro.SecurityUtils;
@@ -42,22 +44,26 @@ public class AdminUserRealm extends AuthorizingRealm {
      */
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         System.err.println("------------进入管理员用户授权");
+        AdminUser adminUser;
         //1.获取已认证的用户数据
-        AdminUser adminUser = (AdminUser) principalCollection.getPrimaryPrincipal();//得到唯一的安全数据
+        try {
+            adminUser = (AdminUser) principalCollection.getPrimaryPrincipal();//得到唯一的安全数据
+        } catch (ClassCastException e){
+            throw new BaseException(ResultEnum.REPEAT_LOGIN);
+        }
         //2.根据用户数据获取用户的权限信息（所有角色，所有权限）
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-        info.addRole("admin");
 
         info.addStringPermission("admin-all");
         if (adminUser.getAccountType() == 1){
             info.addStringPermission("pet-admin");
+            info.addRole("pet-admin");
         }else if (adminUser.getAccountType() == 2){
-
+            info.addRole("community-admin");
         }else{
-            info.addStringPermission("sys-admin");
-
+            info.addRole("sys-admin");
         }
-
+        System.err.println(info.getStringPermissions());
         return info;
     }
 
@@ -82,13 +88,15 @@ public class AdminUserRealm extends AuthorizingRealm {
         wrapper.eq("username",username);
         AdminUser user = adminUserService.getOne(wrapper);
         //3.判断用户是否存在或者密码是否一致
-
         if(user != null && user.getPassword().equals(password)) {
+
+
             //4.如果一致返回安全数据
             //构造方法：安全数据，密码，realm域名
             SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(user,user.getPassword(),this.getName());
             return info;
         }
+
         //5.不一致，返回null（抛出异常）
         return null;
     }

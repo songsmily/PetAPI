@@ -15,4 +15,8 @@ public interface AdminUserService extends IService<AdminUser> {
     Result doLogin(AdminUser adminUser);
 
     Result returnAdminUserInfo();
+
+    boolean resetPassword(String password);
+
+    boolean doUpdate(AdminUser adminUser);
 }

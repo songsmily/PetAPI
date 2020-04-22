@@ -11,6 +11,7 @@ import com.songsmily.petapi.entity.BlCommentSec;
 import com.songsmily.petapi.enums.ResultEnum;
 import com.songsmily.petapi.exception.BaseException;
 import com.songsmily.petapi.service.BlCommentSecService;
+import com.songsmily.petapi.utils.ContentReview;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,9 +34,18 @@ public class BlCommentSecController {
     @Resource
     private BlCommentSecService blCommentSecService;
 
+    /**
+     * 内容审核对象
+     */
+    @Resource
+    ContentReview contentReview;
+
     @RequiresPermissions("user-all")
     @RequestMapping("addSecComment")
     public Result addSecComment(@RequestBody BlCommentSec commentSec){
+        //审核
+        contentReview.reviewText(commentSec.getSecContent());
+
         if (null == commentSec.getSecContent() || null == commentSec.getSecParent()){
             throw new BaseException(ResultEnum.PARAMS_NULL);
         }

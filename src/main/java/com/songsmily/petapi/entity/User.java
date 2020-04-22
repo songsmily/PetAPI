@@ -44,7 +44,7 @@ public class User extends Model<User> implements Serializable, AuthCachePrincipa
     private Long gmtModified;
     //头像地址
     private String avatarUrl;
-    //账户类型
+    //账户类型 0 注册账户  1 github注册账户  2 qq注册账户
     private Integer accountType;
     //账户状态
     private Integer status;

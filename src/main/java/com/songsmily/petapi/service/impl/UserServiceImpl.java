@@ -8,10 +8,7 @@ import com.songsmily.petapi.dto.Result;
 import com.songsmily.petapi.entity.User;
 import com.songsmily.petapi.enums.ResultEnum;
 import com.songsmily.petapi.service.UserService;
-import com.songsmily.petapi.utils.BASE64DecodedMultipartFile;
-import com.songsmily.petapi.utils.CommonUtils;
-import com.songsmily.petapi.utils.OssUtil;
-import com.songsmily.petapi.utils.ShiroUtil;
+import com.songsmily.petapi.utils.*;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.crypto.hash.Md5Hash;
@@ -38,6 +35,8 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     UserDao userDao;
     @Resource
     OssUtil ossUtil;
+    @Resource
+    ContentReview contentReview;
 
     /**
      * 返回已登录用户信息
@@ -120,17 +119,23 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     @Override
     public Result doUpdate(User user) {
         User oldUser = ShiroUtil.getUser(new User());
-        System.err.println(user.getAvatarUrl());
-        System.err.println(oldUser.getAvatarUrl());
-        System.err.println(!user.getAvatarUrl().equals(oldUser.getAvatarUrl()));
+        //审核签名
+
+        if (!user.getBio().equals(oldUser.getBio())) {
+            contentReview.reviewBio(user.getBio());
+        }
+
         if (!user.getAvatarUrl().equals(oldUser.getAvatarUrl())){
             MultipartFile multipartFile = BASE64DecodedMultipartFile.base64ToMultipart(user.getAvatarUrl());
+            //审核头像
+            contentReview.reviewAvartar(multipartFile);
             String res = ossUtil.uploadImg2Oss(multipartFile);
             List<String> filename = new ArrayList<>();
             filename.add(oldUser.getAvatarUrl().substring(oldUser.getAvatarUrl().lastIndexOf("images/")));
             ossUtil.deleteFile20SS(filename);
             oldUser.setAvatarUrl(res);
         }
+
         oldUser.setName(user.getName());
         oldUser.setRealName(user.getRealName());
         oldUser.setEmail(user.getEmail());
@@ -168,6 +173,43 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
             return new Result(ResultEnum.ERROR);
 
         }
+    }
+
+    /**
+     * 用户 首次登陆 完善个人信息
+     * @param user
+     * @return
+     */
+    @Override
+    public boolean completeUserInfo(User user) {
+
+        User oldUSer = ShiroUtil.getUser(new User());
+        oldUSer.setLocation(user.getLocation());
+        oldUSer.setAddr(user.getAddr());
+        oldUSer.setEmail(user.getEmail());
+        oldUSer.setRealName(user.getRealName());
+
+        if (null != user.getPhone()) {
+            oldUSer.setPhone(user.getPhone());
+            oldUSer.setName(user.getName());
+        }
+
+        int i = userDao.updateById(oldUSer);
+        if (i > 0){
+            ShiroUtil.setUser(oldUSer);
+        }
+
+        return i > 0;
+    }
+
+    /**
+     * 将用户头像转成base64
+     * @param imgUrl
+     * @return
+     */
+    @Override
+    public String getImgBase64(String imgUrl) {
+        return Image2Base64.image2Base64(imgUrl);
     }
 
 

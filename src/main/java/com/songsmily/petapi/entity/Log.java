@@ -6,41 +6,30 @@ import com.baomidou.mybatisplus.extension.activerecord.Model;
 import java.io.Serializable;
 
 /**
- * 接口访问日志表(Log)表实体类
+ * (Log)表实体类
  *
  * @author SongSmily
- * @since 2020-03-16 12:03:45
+ * @since 2020-04-16 22:41:24
  */
 @SuppressWarnings("serial")
 public class Log extends Model<Log> {
     //日志id
     @TableId(value = "log_id", type = IdType.AUTO)
-
     private Integer logId;
-    //请求路径
-    private String logUrl;
-    //参数
-    private String logParams;
-    //访问状态，1正常0异常
-    private Integer logStatus;
-    //异常信息
-    private String logMessage;
-    //请求方式，get、post等
+    //操作用户Id
+    private Integer logAdminId;
+    //操作用户名
+    private String logUsername;
+    //操作名称
+    private String logOperate;
+    //方法名
     private String logMethod;
-    //响应时间
-    private Long logTime;
-    //返回值
-    private String logResult;
+    //请求参数
+    private String logParams;
     //请求ip
     private String logIp;
     //创建时间
     private Long logGmtCreate;
-    //操作用户Id
-    private Integer logAdminId;
-    //操作用户名
-    private String logAdminName;
-    //操作内容
-    private String logDesc;
 
 
     public Integer getLogId() {
@@ -51,36 +40,28 @@ public class Log extends Model<Log> {
         this.logId = logId;
     }
 
-    public String getLogUrl() {
-        return logUrl;
+    public Integer getLogAdminId() {
+        return logAdminId;
     }
 
-    public void setLogUrl(String logUrl) {
-        this.logUrl = logUrl;
+    public void setLogAdminId(Integer logAdminId) {
+        this.logAdminId = logAdminId;
     }
 
-    public String getLogParams() {
-        return logParams;
+    public String getLogUsername() {
+        return logUsername;
     }
 
-    public void setLogParams(String logParams) {
-        this.logParams = logParams;
+    public void setLogUsername(String logUsername) {
+        this.logUsername = logUsername;
     }
 
-    public Integer getLogStatus() {
-        return logStatus;
+    public String getLogOperate() {
+        return logOperate;
     }
 
-    public void setLogStatus(Integer logStatus) {
-        this.logStatus = logStatus;
-    }
-
-    public String getLogMessage() {
-        return logMessage;
-    }
-
-    public void setLogMessage(String logMessage) {
-        this.logMessage = logMessage;
+    public void setLogOperate(String logOperate) {
+        this.logOperate = logOperate;
     }
 
     public String getLogMethod() {
@@ -91,20 +72,12 @@ public class Log extends Model<Log> {
         this.logMethod = logMethod;
     }
 
-    public Long getLogTime() {
-        return logTime;
+    public String getLogParams() {
+        return logParams;
     }
 
-    public void setLogTime(Long logTime) {
-        this.logTime = logTime;
-    }
-
-    public String getLogResult() {
-        return logResult;
-    }
-
-    public void setLogResult(String logResult) {
-        this.logResult = logResult;
+    public void setLogParams(String logParams) {
+        this.logParams = logParams;
     }
 
     public String getLogIp() {
@@ -121,30 +94,6 @@ public class Log extends Model<Log> {
 
     public void setLogGmtCreate(Long logGmtCreate) {
         this.logGmtCreate = logGmtCreate;
-    }
-
-    public Integer getLogAdminId() {
-        return logAdminId;
-    }
-
-    public void setLogAdminId(Integer logAdminId) {
-        this.logAdminId = logAdminId;
-    }
-
-    public String getLogAdminName() {
-        return logAdminName;
-    }
-
-    public void setLogAdminName(String logAdminName) {
-        this.logAdminName = logAdminName;
-    }
-
-    public String getLogDesc() {
-        return logDesc;
-    }
-
-    public void setLogDesc(String logDesc) {
-        this.logDesc = logDesc;
     }
 
     /**

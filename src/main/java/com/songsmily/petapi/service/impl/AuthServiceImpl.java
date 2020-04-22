@@ -88,6 +88,7 @@ public class AuthServiceImpl implements AuthService {
                 user.setAvatarUrl(String.valueOf(qqUser.getFigureurl_2()));
                 user.setAccountType(2);
                 user.setBio("签名是一种态度");
+                user.setStatus(0);
                 //qq授权用户密码为openId哈希散列3次得到
                 user.setPassword(new Md5Hash(openId,null,3).toString());
 
@@ -124,6 +125,7 @@ public class AuthServiceImpl implements AuthService {
                 user.setAccountType(1);
                 user.setPassword(new Md5Hash(githubUser.getId().toString(),null,3).toString());
                 user.setBio("签名是一种态度");
+                user.setStatus(0);
                 userService.save(user);
             }
             return user;

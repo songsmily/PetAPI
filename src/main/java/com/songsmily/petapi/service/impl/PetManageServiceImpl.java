@@ -5,10 +5,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.songsmily.petapi.dao.*;
 import com.songsmily.petapi.dto.PetAllInfoSelectParams;
+import com.songsmily.petapi.dto.PetNoticeMessage;
 import com.songsmily.petapi.dto.Result;
 import com.songsmily.petapi.entity.*;
 import com.songsmily.petapi.enums.ResultEnum;
 import com.songsmily.petapi.service.PetManageService;
+import com.songsmily.petapi.utils.MessageUtils;
+import org.omg.CORBA.OBJECT_NOT_EXIST;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -29,6 +32,9 @@ public class PetManageServiceImpl implements PetManageService {
     SysPetNoticeDao sysPetNoticeDao;
     @Resource
     PetCancelDao petCancelDao;
+
+    @Resource
+    MessageUtils messageUtils;
 
     @Override
     public Result returnPetCardImmunityInfoList(PetAllInfoSelectParams petAllInfoSelectParams) {
@@ -94,7 +100,8 @@ public class PetManageServiceImpl implements PetManageService {
                         petImmunities) {
                     if (petImmunity.getPetId().equals(petinfo.getPetId())) {
                         petImmunityInfo.add(petImmunity);
-                        petImmunityCount ++;
+                        if (petImmunity.getImmunityStatus() == 1)
+                            petImmunityCount ++;
                     }
                 }
                 PetCancel petCancel =  null;
@@ -129,5 +136,92 @@ public class PetManageServiceImpl implements PetManageService {
             return new Result(ResultEnum.ERROR);
         }
 
+    }
+
+    /**
+     * 向用户发送宠物免疫信息注射及建议信息
+     * @param message
+     * @return
+     */
+    @Override
+    public boolean sendImmunityMessage(PetNoticeMessage message) {
+        Map<String,String> map = new HashMap<>();
+        map.put("number", message.getPhone());
+        StringBuilder builder = new StringBuilder();
+        builder.append("宠物之家用户您好，系统提示：请及时对您饲养的宠物“" ).append(message.getPetName()).append("“").append("注射疫苗并上传疫苗信息到系统！");
+        builder.append("宠物管理员建议：").append(message.getMessage());
+        map.put("message", builder.toString());
+        boolean b = messageUtils.sendMessage(map);
+        return b;
+    }
+
+    /**
+     * 向用户发送免疫证书信息上传通知
+     * @param message
+     * @return
+     */
+    @Override
+    public boolean sendCardMessage(PetNoticeMessage message) {
+        Map<String,String> map = new HashMap<>();
+        map.put("number", message.getPhone());
+        StringBuilder builder = new StringBuilder();
+        builder.append("宠物之家用户您好，系统提示：请及时为您饲养的宠物“" ).append(message.getPetName()).append("”办理宠物免疫证书并将证书信息上传至系统！");
+        map.put("message", builder.toString());
+        boolean b = messageUtils.sendMessage(map);
+        return b;
+    }
+
+    /**
+     * 查询宠物信息总览
+     * @return
+     */
+    @Override
+    public Map<String, Object> getOverView() {
+        QueryWrapper wrapper;
+        //查询已审核宠物总数
+        wrapper = new QueryWrapper();
+        wrapper.eq("pet_status", 1);
+        wrapper.eq("is_cancel", 0);
+        Integer checkPetCount = petinfoDao.selectCount(wrapper);
+
+        //查询待审核宠物总数
+        wrapper = new QueryWrapper();
+        wrapper.eq("pet_status", 0);
+        wrapper.eq("is_cancel", 0);
+        Integer unCheckPetCount  = petinfoDao.selectCount(wrapper);
+
+        //查询已审核宠物证书总数
+        wrapper = new QueryWrapper();
+        wrapper.eq("card_status", 1);
+        wrapper.eq("is_cancel", 0);
+        Integer checkCardCount= petCardDao.selectCount(wrapper);
+
+        //查询待审核宠物证书总数
+        wrapper = new QueryWrapper();
+        wrapper.eq("card_status", 0);
+        wrapper.eq("is_cancel", 0);
+        Integer unCheckCardCount = petCardDao.selectCount(wrapper);
+
+        //查询已审核疫苗信息总数
+        wrapper = new QueryWrapper();
+        wrapper.eq("immunity_status", 1);
+        wrapper.eq("is_cancel", 0);
+        Integer checkImmunityCount= petImmunityDao.selectCount(wrapper);
+
+        //查询待审核疫苗信息总数
+        wrapper = new QueryWrapper();
+        wrapper.eq("immunity_status", 0);
+        wrapper.eq("is_cancel", 0);
+        Integer unCheckImmunityCount= petImmunityDao.selectCount(wrapper);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("checkPetCount", checkPetCount);
+        map.put("unCheckPetCount", unCheckPetCount);
+        map.put("checkCardCount", checkCardCount);
+        map.put("unCheckCardCount", unCheckCardCount);
+        map.put("checkImmunityCount", checkImmunityCount);
+        map.put("unCheckImmunityCount", unCheckImmunityCount);
+
+        return map;
     }
 }

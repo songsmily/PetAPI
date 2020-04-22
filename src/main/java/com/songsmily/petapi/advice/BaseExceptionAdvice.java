@@ -18,7 +18,6 @@ public class BaseExceptionAdvice {
      *
      * @param exception
      */
-    @ExceptionHandler(BaseException.class)
     @ResponseBody
     public Result<Object> exceptionHandler(BaseException exception) {
         return new Result<>(exception.getErrorCode(), exception.getMessage());

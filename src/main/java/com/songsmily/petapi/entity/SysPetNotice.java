@@ -20,11 +20,15 @@ public class SysPetNotice extends Model<SysPetNotice> {
     private Integer userId;
     //宠物ID
     private Integer petId;
+
     //宠物免疫证书ID
     private Integer petCardId;
+
+
     //宠物免疫信息ID
     private Integer petImmunityId;
     //通知类型：1、审核通过通知 2、审核失败通知 3、免疫证书审核通过通知 4、免疫证书审核失败通知 5、免疫信息审核通过通知 6、免疫信息审核失败通知
+    //       11. 提示上传免疫证书通知 12.提示注射疫苗通知
     private Integer type;
     
     private Long gmtCreate;

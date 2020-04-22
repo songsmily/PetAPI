@@ -11,6 +11,7 @@ import com.songsmily.petapi.entity.BlComment;
 import com.songsmily.petapi.enums.ResultEnum;
 import com.songsmily.petapi.exception.BaseException;
 import com.songsmily.petapi.service.BlCommentService;
+import com.songsmily.petapi.utils.ContentReview;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +34,17 @@ public class BlCommentController  {
     @Resource
     private BlCommentService blCommentService;
 
+    /**
+     * 内容审核对象
+     */
+    @Resource
+    ContentReview contentReview;
+
+    /**
+     * 通过帖子ID查询评论
+     * @param blogId
+     * @return
+     */
     @RequiresPermissions("user-all")
     @RequestMapping("getBlogCommentById")
     public Result getBlogCommentById(String blogId){
@@ -45,12 +57,17 @@ public class BlCommentController  {
 
     /**
      * 新增评论
-     * @param comment 评论实体
      * @return 返回是否新增成功
      */
     @RequiresPermissions("user-all")
     @RequestMapping("addComment")
-    public Result addComment(@RequestBody BlComment comment){
+    public Result addComment(String commentBlog, String commentContent ){
+        //审核
+        contentReview.reviewText(commentContent);
+
+        BlComment comment = new BlComment();
+        comment.setCommentBlog(commentBlog);
+        comment.setCommentContent(commentContent);
         if (null == comment.getCommentContent() || null == comment.getCommentBlog()){
             throw new BaseException(ResultEnum.PARAMS_NULL);
         }

@@ -4,11 +4,27 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.songsmily.petapi.dao.BlBlogDao">
+
+    <update id="updateBlogStatusById">
+        update bl_blog set blog_status=1 where blog_id=#{blogId}
+    </update>
+
     <select id="selectBlogPageByType" resultType="com.songsmily.petapi.entity.BlBlog" parameterType="java.util.Map">
         select bl_blog.* ,user.avatar_url,user.name from bl_blog left JOIN user on user.id=bl_blog.user_id
         <where>
             and bl_blog.deleted=#{params.deleted}
-            and bl_blog.blog_type=#{params.blogType}
+            <if test="params.blogType!=0">
+                <if test="params.blogType!=-1">
+                    and bl_blog.blog_type=#{params.blogType}
+                </if>
+                <if test="params.blogType==-1">
+                    and bl_blog.user_id=#{params.userId}
+                </if>
+            </if>
+            <if test="params.blogStatus!=null">
+                and bl_blog.blog_status=#{params.blogStatus}
+            </if>
+
         </where>
         order by bl_blog.created_time desc
          limit #{params.begin},#{params.end}
@@ -17,6 +33,24 @@
         select bl_blog.* ,user.avatar_url,user.name from bl_blog left JOIN user on user.id=bl_blog.user_id
         <where>
             and bl_blog.blog_id=#{blogId}
+        </where>
+    </select>
+    <select id="selectBlogPageByHotTag" resultType="com.songsmily.petapi.entity.BlBlog" parameterType="java.util.Map">
+        select bl_blog.* ,user.avatar_url,user.name from bl_blog left JOIN user on user.id=bl_blog.user_id
+        <where>
+            and bl_blog.deleted=0
+            and bl_blog.blog_tag like '%&amp;${params.tag}&amp;%'
+        </where>
+        order by bl_blog.created_time desc
+        limit #{params.begin},#{params.end}
+    </select>
+    <select id="selectBlogByIds" resultType="com.songsmily.petapi.entity.BlBlog" parameterType="java.util.List">
+        select bl_blog.* ,user.avatar_url,user.name from bl_blog left JOIN user on user.id=bl_blog.user_id
+        <where>
+            and bl_blog.blog_id in
+            <foreach  item="item" collection="blCollects" index="index"  open="(" separator="," close=")">
+                #{item.blogId}
+            </foreach>
         </where>
     </select>
 </mapper>

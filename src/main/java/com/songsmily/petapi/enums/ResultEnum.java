@@ -10,7 +10,7 @@ import lombok.Getter;
 @Getter
 public enum ResultEnum {
     /**
-     * 返回结果枚举，每个枚举代表着一个返回状态
+     * 返回结果枚举
      */
     SUCCESS(100, "操作成功！"),
     ERROR(40000, "操作失败！"),
@@ -18,7 +18,15 @@ public enum ResultEnum {
     PARAMS_NULL(40002, "参数不能为空！"),
     PARAMS_ERROR(40005, "参数不合法！"),
     NOT_AUTH(600, "当前账号未授权！"),
-    NOT_LOGIN(700, "当前账号未登录！");
+    NOT_LOGIN(700, "当前账号未登录！"),
+    SERVER_ERROR(40007,"服务器异常"),
+    EXPIRED_ERROR(60000,"参数过期异常"),
+    CONTENT_REVIEW_ERROR(60001,"内容审核失败异常"),
+    BIO_REVIEW_ERROR(60002,"签名内容审核失败异常"),
+    AVATAR_REVIEW_ERROR(60003,"头像内容审核失败异常"),
+    ACCOUNT_DISABLE_ERROR(60004,"账户不可用异常"),
+    USERNAME_PASSWORD_ERROR(60005,"账号密码错误"),
+    REPEAT_LOGIN(50000,"重复登录异常");
     private Integer code;
     private String msg;
 

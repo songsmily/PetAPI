@@ -13,6 +13,7 @@ import com.songsmily.petapi.entity.User;
 import com.songsmily.petapi.enums.ResultEnum;
 import com.songsmily.petapi.service.PetCardService;
 import com.songsmily.petapi.utils.BASE64DecodedMultipartFile;
+import com.songsmily.petapi.utils.Image2Base64;
 import com.songsmily.petapi.utils.OssUtil;
 import com.songsmily.petapi.utils.ShiroUtil;
 import org.assertj.core.error.uri.ShouldHaveUserInfo;
@@ -47,6 +48,7 @@ public class PetCardServiceImpl extends ServiceImpl<PetCardDao, PetCard> impleme
         QueryWrapper wrapper = new QueryWrapper();
         wrapper.eq("hoste_id", user.getId());
         wrapper.eq("is_cancel", 0);
+        wrapper.ne("pet_status", -1);
         List<Petinfo> res = petinfoDao.selectList(wrapper);
         List<Petinfo> newRes = new ArrayList<>();
         if (null != res) {
@@ -113,7 +115,61 @@ public class PetCardServiceImpl extends ServiceImpl<PetCardDao, PetCard> impleme
             return new Result(ResultEnum.SUCCESS);
         } else {
             return new Result(ResultEnum.ERROR);
+        }
+    }
 
+    @Override
+    public Petinfo returnPetCardImmunityInfosByPetId(String petId) {
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.eq("pet_id", petId);
+        Petinfo petinfo = petinfoDao.selectOne(wrapper);
+        wrapper = new QueryWrapper();
+        wrapper.eq("pet_id", petinfo.getPetId());
+        PetCard petCard = petCardDao.selectOne(wrapper);
+        if (null != petCard) {
+//            petCard.setCardImageUrl(Image2Base64.image2Base64(petCard.getCardImageUrl()));
+
+            wrapper = new QueryWrapper();
+            wrapper.eq("pet_card_id", petCard.getPetCardId());
+            List<PetImmunity> petImmunities = petImmunityDao.selectList(wrapper);
+            petCard.setPetImmunities(petImmunities);
+        }
+
+        petinfo.setPetCard(petCard);
+        petinfo.setPetCard(petCard);
+
+        return petinfo;
+    }
+
+    @Override
+    public Result updatePetCardMobile(PetCard petCard) {
+        PetCard oldPetcard = petCardDao.selectById(petCard.getPetCardId());
+        String oldImageBase64 = Image2Base64.image2Base64(oldPetcard.getCardImageUrl());
+
+        if (!oldImageBase64.equals(petCard.getCardImageUrl())) {
+            MultipartFile multipartFile = BASE64DecodedMultipartFile.base64ToMultipart(petCard.getCardImageUrl());
+            try {
+                String url = ossUtil.uploadImg2Oss(multipartFile);
+                if (url.equals("上传失败")) {
+                    throw new Exception();
+                }
+                List<String> list = new ArrayList<>();
+                list.add(oldPetcard.getCardImageUrl().substring(oldPetcard.getCardImageUrl().lastIndexOf("/") + 1));
+                ossUtil.deleteFile20SS(list);
+                petCard.setCardImageUrl(url);
+            } catch (Exception e) {
+                return new Result(ResultEnum.ERROR);
+            }
+        } else {
+
+            petCard.setCardImageUrl(oldPetcard.getCardImageUrl());
+        }
+        petCard.setCardStatus(0);
+        petCard.setFalseRes("-1");
+        if (petCardDao.updateById(petCard) > 0) {
+            return new Result(ResultEnum.SUCCESS);
+        } else {
+            return new Result(ResultEnum.ERROR);
         }
     }
 }

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.songsmily.petapi.dao.LogDao">
+
+    <select id="selectDisUserNameList" resultType="com.songsmily.petapi.entity.Log">
+        select distinct log_username,log_admin_id from log
+    </select>
+</mapper>

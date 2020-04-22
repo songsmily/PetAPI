@@ -16,4 +16,8 @@ public interface PettypeService extends IService<Pettype> {
 
 
     Result getPetTypeById(Integer petTypeId);
+
+    Result getPetTypeArrayMobile();
+
+
 }

@@ -73,5 +73,49 @@ public class PettypeServiceImpl extends ServiceImpl<PettypeDao, Pettype> impleme
         return new Result(pettype);
     }
 
+    @Override
+    public Result getPetTypeArrayMobile() {
+        List<Pettype> pettypes = pettypeDao.selectList(null);
+        Set<String> setOne = new HashSet<>();
+        Set<String> setTwo = new HashSet<>();
+
+        for (Pettype pettype : pettypes) {
+            setOne.add(pettype.getPetClassifyOne());
+            setTwo.add(pettype.getPetClassifyTwo());
+        }
+
+        List<Map<String, Object>> resultOne = new ArrayList<>();
+        for (String itemOne : setOne) {
+            Map<String, Object> mapOne = new HashMap<>();
+            mapOne.put("text", itemOne);
+            mapOne.put("value", itemOne);
+            List<Map<String, Object>> resultTwo = new ArrayList<>();
+            for (String itemTwo : setTwo) {
+                Map<String, Object> mapTwo = new HashMap<>();
+                mapTwo.put("text", itemTwo);
+                mapTwo.put("value", itemTwo);
+                List<Map<String, Object>> foorThree = new ArrayList<>();
+                Boolean pos = false;
+                for (Pettype pettypeThree : pettypes) {
+                    if (pettypeThree.getPetClassifyTwo().equals(itemTwo) && pettypeThree.getPetClassifyOne().equals(itemOne)) {
+                        pos = true;
+                        Map<String, Object> mapThree = new HashMap<>();
+                        mapThree.put("text", pettypeThree.getPetClassifyThree());
+                        mapThree.put("value", pettypeThree.getPetClassifyThree());
+                        foorThree.add(mapThree);
+                    }
+                }
+                if (pos) {
+                    mapTwo.put("children", foorThree);
+                    resultTwo.add(mapTwo);
+                    mapOne.put("children", resultTwo);
+                }
+
+            }
+            resultOne.add(mapOne);
+        }
+        return new Result(resultOne);
+    }
+
 
 }

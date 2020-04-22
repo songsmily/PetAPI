@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.songsmily.petapi.dao.AdminUserDao">
+    <select id="selectAdminList" resultType="com.songsmily.petapi.entity.AdminUser">
+        select id,username,real_name,phone,account_type,status from admin_user
+        <where>
+            and account_type=#{params.accountType}
+        </where>
+        limit #{params.begin},#{params.end}
+    </select>
+    <select id="selectUserNameList" resultType="com.songsmily.petapi.entity.AdminUser">
+        select id,username,phone,real_name,status  from admin_user
+        <where>
+            and account_type=#{accountType}
+        </where>
+    </select>
+
+
+</mapper>

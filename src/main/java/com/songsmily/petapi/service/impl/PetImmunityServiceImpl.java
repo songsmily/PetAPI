@@ -1,5 +1,6 @@
 package com.songsmily.petapi.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.songsmily.petapi.dao.PetImmunityDao;
 import com.songsmily.petapi.dto.Result;
@@ -7,6 +8,7 @@ import com.songsmily.petapi.entity.PetImmunity;
 import com.songsmily.petapi.enums.ResultEnum;
 import com.songsmily.petapi.service.PetImmunityService;
 import com.songsmily.petapi.utils.BASE64DecodedMultipartFile;
+import com.songsmily.petapi.utils.Image2Base64;
 import com.songsmily.petapi.utils.OssUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * (PetImmunity)表服务实现类
@@ -51,6 +54,7 @@ public class PetImmunityServiceImpl extends ServiceImpl<PetImmunityDao, PetImmun
     @Override
     public Result updateImmunity(PetImmunity petImmunity) {
         PetImmunity oldPetImmunity = petImmunityDao.selectById(petImmunity.getPetImmunityId());
+
         if (!oldPetImmunity.getImmunityImageUrl().equals(petImmunity.getImmunityImageUrl())){
             MultipartFile multipartFile = BASE64DecodedMultipartFile.base64ToMultipart(petImmunity.getImmunityImageUrl());
             try {
@@ -67,6 +71,8 @@ public class PetImmunityServiceImpl extends ServiceImpl<PetImmunityDao, PetImmun
                 return new Result(ResultEnum.ERROR);
 
             }
+        } else {
+            petImmunity.setImmunityImageUrl(oldPetImmunity.getImmunityImageUrl());
         }
         petImmunity.setFalseRes("-1");
         petImmunity.setImmunityStatus(0);
@@ -77,4 +83,28 @@ public class PetImmunityServiceImpl extends ServiceImpl<PetImmunityDao, PetImmun
         return new Result(ResultEnum.ERROR);
 
     }
+
+    /**
+     * 根据petId查询免疫信息
+     * @param petId
+     * @return
+     */
+    @Override
+    public List<PetImmunity> getImmunityById(String petId) {
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.eq("pet_id", petId);
+        List list = petImmunityDao.selectList(wrapper);
+
+        return list;
+    }
+
+    @Override
+    public PetImmunity getImmunityInfoByImmunityId(String immunityId) {
+        PetImmunity petImmunity = petImmunityDao.selectById(immunityId);
+//        petImmunity.setImmunityImageUrl(Image2Base64.image2Base64(petImmunity.getImmunityImageUrl()));
+
+
+        return petImmunity;
+    }
+
 }
